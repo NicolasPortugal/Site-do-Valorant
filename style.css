@@ -1,0 +1,340 @@
+
+        :root {
+            --bg-color: #0f1923;
+            --card-bg: #1f2731;
+            --text-main: #ece8e1;
+            --text-muted: #8b9bb4;
+            --accent-red: #ff4655; /* Nerf Red */
+            --accent-green: #17e588; /* Buff Green */
+            --accent-yellow: #ffce00; /* Neutral/Adjust */
+            --border-color: #353e4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background: #111;
+            border-bottom: 4px solid var(--accent-red);
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Controls --- */
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            padding: 0 1rem;
+        }
+
+        /* Container para alinhar a barra de busca e os botões */
+.controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 2rem auto;
+    max-width: 1200px;
+    padding: 0 1rem;
+    align-items: center; /* Alinha verticalmente a busca e os filtros */
+}
+
+/* Novo Estilo da Barra de Busca com Efeito de Expansão */
+.search-form-container {
+    /* Base do Form - Fechado */
+    position: relative;
+    transition: all 0.5s;
+    width: 40px; /* Largura inicial menor */
+    height: 40px; 
+    background: var(--card-bg);
+    box-sizing: border-box;
+    border-radius: 20px; /* Arredondado para ser mais suave */
+    border: 2px solid var(--border-color);
+    padding: 5px;
+    display: flex;
+    flex-shrink: 0; /* Impede que o form encolha */
+}
+
+.search-form-container input {
+    /* Campo de Input - Escondido Inicialmente */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0; /* Largura inicial zero */
+    height: 36px; /* Ajustado à altura do form */
+    line-height: 36px;
+    outline: 0;
+    border: 0;
+    font-size: 1em;
+    border-radius: 20px;
+    /* Ajustei o padding para deixar espaço para o 'x' */
+    padding: 0 40px 0 15px; 
+    background: transparent;
+    color: var(--text-main);
+    transition: all 0.5s;
+}
+
+/* REMOVIDO: Antigo .search-form-container .fa */
+/* NOVO: Estilo para o Botão de Limpar (o 'x') */
+
+/* Efeito de Expansão ao Focar/Hover */
+.search-form-container:focus-within,
+.search-form-container:hover {
+    width: 300px; /* Nova largura ao expandir */
+    cursor: pointer;
+    border-color: var(--accent-red); /* Borda fica vermelha */
+}
+
+.search-form-container:hover input,
+.search-form-container:focus-within input {
+    width: 100%; /* Input preenche a largura do form expandido */
+}
+
+/* NOVO: Mostra o 'x' quando o campo está focado ou o texto de busca está ativo (com JS) */
+
+
+/* Ajuste para mobile para garantir que o campo expandido não quebre o layout */
+@media (max-width: 600px) {
+    .search-form-container:focus-within,
+    .search-form-container:hover {
+        width: 100%; /* Preenche 100% da largura do container em mobile */
+    }
+}
+
+        
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            font-family: 'Oswald', sans-serif;
+            min-width: 120px;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+            color: white;
+        }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .section-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            color: var(--text-main);
+            border-left: 5px solid var(--accent-red);
+            padding-left: 1rem;
+            margin: 3rem 0 1.5rem 0;
+            text-transform: uppercase;
+        }
+
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* --- Agent Card --- */
+        .agent-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: var(--text-muted);
+        }
+
+        /* Novo estilo de Header/Imagem */
+        .card-header {
+            /* Removido o estilo anterior que era só para o ícone */
+            padding: 0;
+            border-bottom: none;
+            display: block; /* Volta para o fluxo normal */
+        }
+        
+        .agent-img-box {
+            width: 100%;
+            height: 160px; /* Altura do bloco da imagem */
+            background: #141b24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Estilo da imagem - APENAS UM EXEMPLO, você deve fornecer a URL correta na tag <img> */
+        .agent-img-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            opacity: 0.6; /* Deixa um pouco mais escuro */
+        }
+        /* Gradiente para escurecer a parte de baixo e conectar com o conteúdo */
+        .agent-img-box::after { 
+            content: ""; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 50%; 
+            background: linear-gradient(transparent, var(--card-bg)); 
+        }
+
+
+        .card-body {
+            padding: 1.5rem;
+            margin-top: -30px; /* Move o conteúdo para cima da imagem */
+            position: relative;
+            z-index: 2;
+        }
+
+        .agent-name {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem; /* Aumentado um pouco para destaque */
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: flex; /* Para centralizar verticalmente */
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .agent-class {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.3);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+        }
+        
+        /* Removido .agent-icon e .agent-info antigos */
+
+        .ability-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .ability-name {
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.2rem;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0.5rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+            font-size: 0.95rem;
+            position: relative;
+            padding-left: 1.2rem;
+            transition: color 0.2s ease;
+        }
+
+        /* --- Change Types (Auto-styling logic) --- */
+        li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Buff Styling */
+        li.buff {
+            color: var(--accent-green);
+        }
+        li.buff::before { content: '▲'; }
+
+        /* Nerf Styling */
+        li.nerf {
+            color: var(--accent-red);
+        }
+        li.nerf::before { content: '▼'; }
+
+        /* Neutral/Adjust Styling */
+        li.neutral {
+            color: var(--accent-yellow);
+        }
+        li.neutral::before { content: '●'; }
+
+        /* Universal Changes Box */
+        .universal-box {
+            background: linear-gradient(90deg, #2c3e50 0%, #1f2731 100%);
+            border: 1px solid var(--text-muted);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        .universal-box h3 {
+            color: var(--accent-yellow);
+            margin-bottom: 1rem;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .filter-btn { width: 100%; text-align: center; }
+            .agents-grid { grid-template-columns: 1fr; }
+        }
+
+        .agent-card.is-searched .agent-img-box {
+    /* Aumenta a altura da caixa de imagem quando o card é resultado da busca */
+    height: 450px; /* Escolha um valor mais alto. Ex: 250px em vez de 160px */
+}
+
+.agent-card.is-searched .card-body {
+    /* Ajusta a margem superior para compensar a imagem mais alta */
+    margin-top: -60px; /* Ajuste este valor (o dobro do que aumentou a imagem) */
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
