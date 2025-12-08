@@ -336,26 +336,77 @@
     }
 }
 
-        
+        .filter-group {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
 
         .filter-btn {
-            background: transparent;
-            border: 1px solid var(--text-muted);
-            color: var(--text-muted);
-            padding: 0.5rem 1.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            font-family: 'Oswald', sans-serif;
-            min-width: 120px;
-        }
+    position: relative;
+    background: rgba(255, 255, 255, 0.05); /* Fundo sutil */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-muted);
+    
+    /* Tipografia */
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    
+    padding: 0.8rem 1.8rem;
+    min-width: 130px;
+    cursor: pointer;
+    overflow: hidden; /* Importante para a animação de slide */
+    transition: all 0.3s ease;
+    
+    /* O CORTE no canto inferior direito (Assinatura visual do Valorant) */
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 90% 100%, 0 100%);
+}
+.filter-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    background: var(--text-muted);
+    transition: background 0.3s ease;
+}
 
+.filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--accent-red);
+    
+    /* Começa escondido na esquerda */
+    transform: translateX(-105%) skewX(-15deg); 
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: -1; /* Fica atrás do texto */
+}
         .filter-btn:hover, .filter-btn.active {
-            background: var(--accent-red);
-            border-color: var(--accent-red);
-            color: white;
+            color: var(--text-main); /* Texto fica branco brilhante */
+    border-color: transparent; /* Remove a borda para ficar clean */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Sombra no texto para leitura */
         }
+        .filter-btn:hover::before,
+.filter-btn.active::before {
+    transform: translateX(0) skewX(0deg);
+}
+.filter-btn:hover::after,
+.filter-btn.active::after {
+    background: white;
+}
+.filter-btn.active {
+    box-shadow: 0 5px 15px rgba(255, 70, 85, 0.3);
+}
 
         /* --- Layout --- */
         .container {
@@ -386,15 +437,25 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative; /* Necessário para bordas/efeitos */
             
         }
 
         .agent-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            border-color: var(--text-muted);
+            transform: translateY(-8px); /* Sobe um pouco mais */
+    
+    /* Borda Vermelha Valorant */
+    border-color: var(--accent-red);
+    
+    /* Glow vermelho sutil atrás do card */
+    box-shadow: 0 15px 35px rgba(255, 70, 85, 0.2);
         }
+
+        .agent-card:hover .agent-img-box img {
+    transform: scale(1.1); /* Zoom in */
+    opacity: 0.8; /* Levemente mais visível/brilhante */
+}
 
         /* Novo estilo de Header/Imagem */
         .card-header {
@@ -417,6 +478,7 @@
         
         /* Estilo da imagem - APENAS UM EXEMPLO, você deve fornecer a URL correta na tag <img> */
         .agent-img-box img { 
+            transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.4s ease;
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
@@ -450,7 +512,27 @@
             display: flex; /* Para centralizar verticalmente */
             align-items: center;
             justify-content: space-between;
+            transition: color 0.3s ease;
         }
+        .agent-card:hover .agent-name {
+    color: var(--accent-red); /* O nome fica vermelho */
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+}
+.agent-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--accent-red);
+    transition: width 0.3s ease;
+    z-index: 10;
+}
+
+.agent-card:hover::after {
+    width: 100%; /* Uma barra vermelha corre pelo topo do card */
+}
         
         .agent-class {
             font-size: 0.8rem;
@@ -585,6 +667,8 @@ input[type="search"]::-webkit-search-cancel-button {
     border: 1px solid var(--border-color);
     box-shadow: 0 0 50px rgba(0,0,0,0.8);
     overflow: hidden; /* O scroll será no body do modal */
+    position: relative;
+
 }
 
 /* Cabeçalho fixo no topo do modal */
@@ -715,20 +799,31 @@ input[type="search"]::-webkit-search-cancel-button {
 
 /* Ajuste no botão de fechar */
 .close-modal {
-    top: 25px;
-    right: 25px;
-    background: rgba(0,0,0,0.5);
-    width: 40px;
-    height: 40px;
+    position: absolute; /* Remove do fluxo e fixa na posição */
+    top: 20px;
+    right: 20px;
+    width: 45px;  /* Levemente maior para facilitar o clique */
+    height: 45px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s;
+    font-size: 1.8rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    z-index: 100; /* Garante que fique acima das partículas/animações */
+    transition: all 0.2s ease;
+    
+    /* Garante que o texto (o X) fique bem no meio */
+    line-height: 0; 
+    padding-bottom: 4px; /* Pequeno ajuste visual vertical */
 }
 .close-modal:hover {
     background: var(--accent-red);
+    border-color: var(--accent-red);
     color: white;
+    transform: rotate(90deg); /* Uma rotação estilosa ao passar o mouse */
 }
 
 @media (max-width: 768px) {
