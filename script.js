@@ -180,13 +180,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const abilityCard = document.createElement('div');
                 abilityCard.className = 'modal-ability-card';
 
+                // 1. Pega o Título
                 const titleEl = group.querySelector('.ability-name');
                 const titleText = titleEl ? titleEl.innerText : 'Habilidade';
+                
+                // 2. Pega a Lista (ul)
                 const listEl = group.querySelector('ul');
                 
+                // 3. Pega a Nota/Descrição (NOVA LÓGICA)
+                const noteEl = group.querySelector('.ability-note');
+
+                // Monta o HTML
                 let cardHTML = `<div class="modal-ability-title">${titleText}</div>`;
+                
                 if (listEl) {
                     cardHTML += listEl.outerHTML; 
+                }
+
+                // Se houver uma nota, adiciona ela (removendo o display:none implícito)
+                if (noteEl) {
+                    // Criamos um novo parágrafo com uma classe específica para o modal
+                    cardHTML += `<p class="modal-ability-note">${noteEl.innerHTML}</p>`;
                 }
 
                 abilityCard.innerHTML = cardHTML;

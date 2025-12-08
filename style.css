@@ -653,3 +653,13 @@ input[type="search"]::-webkit-search-cancel-button {
     0% { opacity: 0.5; }
     100% { opacity: 0.8; }
 }
+
+.modal-ability-note {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1); /* Linha separadora sutil */
+    color: var(--text-muted); /* Cor mais suave */
+    font-style: italic;
+    font-size: 0.9rem;
+    display: block; /* Garante que apareça */
+}
