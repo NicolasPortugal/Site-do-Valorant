@@ -264,67 +264,93 @@
 
         /* Container para alinhar a barra de busca e os botões */
 .controls {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin: 2rem auto;
-    max-width: 1200px;
-    padding: 0 1rem;
-    align-items: center; /* Alinha verticalmente a busca e os filtros */
+    align-items: stretch; /* Garante que todos tenham a mesma altura */
+    gap: 10px;
 }
 
-/* Novo Estilo da Barra de Busca com Efeito de Expansão */
 .search-form-container {
-    /* Base do Form - Fechado */
     position: relative;
-    transition: all 0.5s;
-    width: 40px; /* Largura inicial menor */
-    height: 40px; 
-    background: var(--card-bg);
-    box-sizing: border-box;
-    border-radius: 20px; /* Arredondado para ser mais suave */
-    border: 2px solid var(--border-color);
-    padding: 5px;
+    /* Tamanho e Forma */
+    min-width: 250px;
+    height: 52px; /* Altura exata para bater com os botões */
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* O Corte Angular (Signature Valorant) */
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 95% 100%, 0 100%);
+    
     display: flex;
-    flex-shrink: 0; /* Impede que o form encolha */
+    align-items: center;
+    transition: all 0.3s ease;
 }
 
-.search-form-container input {
-    /* Campo de Input - Escondido Inicialmente */
+/* Ícone de Lupa feito com CSS (sem precisar de imagem) */
+.search-form-container::before {
+    content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 0; /* Largura inicial zero */
-    height: 36px; /* Ajustado à altura do form */
-    line-height: 36px;
-    outline: 0;
-    border: 0;
-    font-size: 1em;
-    border-radius: 20px;
-    /* Ajustei o padding para deixar espaço para o 'x' */
-    padding: 0 40px 0 15px; 
+    left: 15px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--text-muted);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+.search-form-container::after {
+    content: '';
+    position: absolute;
+    left: 26px;
+    top: 28px;
+    width: 2px;
+    height: 6px;
+    background: var(--text-muted);
+    transform: rotate(-45deg);
+    transition: all 0.3s ease;
+}
+
+/* Input Real */
+.search-form-container input {
+    width: 100%;
+    height: 100%;
     background: transparent;
+    border: none;
+    outline: none;
     color: var(--text-main);
-    transition: all 0.5s;
+    
+    /* Tipografia Tática */
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    
+    padding-left: 45px; /* Espaço para o ícone */
+    padding-right: 15px;
 }
 
-/* REMOVIDO: Antigo .search-form-container .fa */
-/* NOVO: Estilo para o Botão de Limpar (o 'x') */
-
-/* Efeito de Expansão ao Focar/Hover */
-.search-form-container:focus-within,
-.search-form-container:hover {
-    width: 300px; /* Nova largura ao expandir */
-    cursor: pointer;
-    border-color: var(--accent-red); /* Borda fica vermelha */
+.search-form-container input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
 }
 
-.search-form-container:hover input,
-.search-form-container:focus-within input {
-    width: 100%; /* Input preenche a largura do form expandido */
+/* Efeito de Foco */
+.search-form-container:focus-within {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: var(--accent-red);
 }
 
+.search-form-container:focus-within::before {
+    border-color: var(--accent-red);
+}
+.search-form-container:focus-within::after {
+    background: var(--accent-red);
+}
+
+/* Ajuste nos botões de filtro para garantir alinhamento */
+.filter-btn {
+    height: 52px; /* Mesma altura da busca */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0; /* Remove margens externas para o gap do container cuidar */
+}
 /* NOVO: Mostra o 'x' quando o campo está focado ou o texto de busca está ativo (com JS) */
 
 
