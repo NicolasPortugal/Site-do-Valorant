@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- 1. Seleção de Elementos ---
+
+    // --- 1. Seleção de Elementos (MOVIDO PARA O TOPO) ---
+    // Precisamos selecionar os elementos ANTES de usar no sistema de idiomas
     const filterBtns = document.querySelectorAll('.filter-btn');
     const searchInput = document.getElementById('searchInput');
     const searchForm = document.getElementById('searchForm');
@@ -17,6 +19,77 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalContextBox = document.getElementById('modalContextBox');
     const modalReasonText = document.getElementById('modalReasonText');
     const modalAbilitiesGrid = document.getElementById('modalAbilitiesGrid');
+
+    // Elementos do Chat e Botões Flutuantes
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    const scrollToChatBtn = document.getElementById('scrollToChatBtn');
+    const commsSection = document.querySelector('.comms-section');
+    const commsForm = document.getElementById('commsForm');
+    const commsInput = document.getElementById('commsInput');
+    const commsNameInput = document.getElementById('commsName');
+    const commsFeed = document.getElementById('commsFeed');
+
+    // --- 0. Sistema de Idiomas (Atualizado para Toggle Único) ---
+    const langToggle = document.getElementById('langToggle');
+    const body = document.body;
+    
+    const translations = {
+        pt: {
+            searchPlaceholder: "Buscar agente...",
+            modalAnalysis: "📝 Análise & Contexto",
+            modalAbilities: "Alterações de Habilidades",
+            systemWelcome: "Bem-vindo ao canal de feedback. Mantenha a comunicação limpa."
+        },
+        en: {
+            searchPlaceholder: "Search agent...",
+            modalAnalysis: "📝 Analysis & Context",
+            modalAbilities: "Ability Changes",
+            systemWelcome: "Welcome to the feedback channel. Keep comms clean."
+        }
+    };
+
+    function setLanguage(lang) {
+        // 1. Atualiza classes do Body (o CSS faz a animação do slider baseado nisso)
+        body.classList.remove('lang-pt', 'lang-en');
+        body.classList.add(`lang-${lang}`);
+
+        // 2. Atualiza Placeholders e Textos JS
+        const t = translations[lang];
+        if(searchInput) searchInput.placeholder = t.searchPlaceholder;
+        
+        const modalContextTitle = document.querySelector('#modalContextBox h3');
+        if(modalContextTitle) modalContextTitle.innerHTML = `<span style="font-size:1.5em">📝</span> ${lang === 'pt' ? 'Análise & Contexto' : 'Analysis & Context'}`;
+        
+        const modalAbilitiesTitle = document.querySelector('.modal-body > h3'); 
+        if(modalAbilitiesTitle) modalAbilitiesTitle.textContent = t.modalAbilities;
+
+        // Salva na memória
+        localStorage.setItem('valorant_patch_lang', lang);
+    }
+
+    // Event Listener do Toggle Único
+    if (langToggle) {
+        langToggle.addEventListener('click', () => {
+            // Verifica qual é o idioma atual no body e inverte
+            const currentLang = body.classList.contains('lang-en') ? 'en' : 'pt';
+            const newLang = currentLang === 'pt' ? 'en' : 'pt';
+            
+            setLanguage(newLang);
+        });
+        
+        // Adiciona suporte a tecla Enter/Espaço para acessibilidade
+        langToggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                langToggle.click();
+            }
+        });
+    }
+
+    // Inicializar idioma
+    const savedLang = localStorage.getItem('valorant_patch_lang') || 'pt';
+    setLanguage(savedLang);
+
 
     // --- 2. Cores e Temas dos Agentes ---
     const agentColors = {
@@ -44,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'kayo':      { glow: 'rgba(50, 200, 255, 0.4)', p1: '#ccf0ff', p2: '#00ccff', p3: '#005588' },
         'fade':      { glow: 'rgba(40, 40, 40, 0.6)', p1: '#888888', p2: '#444444', p3: '#000000' },
         'gekko':     { glow: 'rgba(190, 230, 80, 0.4)', p1: '#eeffaa', p2: '#bee650', p3: '#6a8c1f' },
-        'tejo':      { glow: 'rgba(100, 100, 100, 0.4)', p1: '#ffffff', p2: '#aaaaaa', p3: '#555555' }, // Adicionado fallback
+        'tejo':      { glow: 'rgba(100, 100, 100, 0.4)', p1: '#ffffff', p2: '#aaaaaa', p3: '#555555' },
 
         // Sentinelas
         'sage':      { glow: 'rgba(64, 224, 208, 0.3)', p1: '#ccfff9', p2: '#40e0d0', p3: '#1a756b' },
@@ -53,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'chamber':   { glow: 'rgba(219, 180, 80, 0.4)', p1: '#ffecaa', p2: '#dbb450', p3: '#8c6e23' },
         'deadlock':  { glow: 'rgba(150, 180, 200, 0.4)', p1: '#e0f0ff', p2: '#96b4c8', p3: '#4a6a7d' },
         'vyse':      { glow: 'rgba(150, 150, 150, 0.4)', p1: '#dcdcdc', p2: '#808080', p3: '#2f2f2f' },
-        'veto':      { glow: 'rgba(150, 150, 150, 0.4)', p1: '#dcdcdc', p2: '#808080', p3: '#2f2f2f' }, // Fallback
+        'veto':      { glow: 'rgba(150, 150, 150, 0.4)', p1: '#dcdcdc', p2: '#808080', p3: '#2f2f2f' }, 
 
         // Padrão
         'default':   { glow: 'rgba(255, 255, 255, 0.1)', p1: '#ffffff', p2: '#888888', p3: '#333333' }
@@ -69,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
             visibleCountPerSection[sectionClass] = 0;
         });
 
-        // Filtrar Cards
         cards.forEach(card => {
             const agentName = card.getAttribute('data-name').toLowerCase();
             const agentClass = card.getAttribute('data-class');
@@ -91,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Filtrar Seções
         sections.forEach(section => {
             const sectionClass = section.getAttribute('data-class');
 
@@ -110,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Lógica do Universal Box
         if (searchText.length > 0) {
             universalBox.style.display = 'none';
         } else {
@@ -145,34 +215,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializa filtros
     filterCards('all', ''); 
 
-    // --- 4. Lógica do MODAL (A Função Nova) ---
+    // --- 4. Lógica do MODAL ---
     function openAgentModal(card) {
         const name = card.getAttribute('data-name');
-        const agentClassType = card.getAttribute('data-class');
         
-        // Pegar dados do card
         const displayTitle = card.querySelector('.agent-name').childNodes[0].textContent.trim();
         const imgSrc = card.querySelector('.agent-img-box img').src;
         
-        // Preencher Cabeçalho
         modalTitle.innerText = displayTitle;
         modalImg.src = imgSrc;
-        modalClass.innerText = agentClassType; 
+        modalClass.innerText = card.getAttribute('data-class'); 
 
-        // Preencher Contexto Geral (Dev Notes)
         const reasonDiv = card.querySelector('.agent-reason');
-        // Verifica se existe texto dentro da div
         if (reasonDiv && reasonDiv.innerText.trim().length > 0) {
-            modalReasonText.innerText = reasonDiv.innerText.trim();
+            modalReasonText.innerHTML = reasonDiv.innerHTML; // Usar innerHTML para manter as tags de span de idioma
             modalContextBox.style.display = 'block';
         } else {
             modalContextBox.style.display = 'none';
         }
 
-        // Preencher Grid de Habilidades
-        modalAbilitiesGrid.innerHTML = ''; // Limpa anterior
+        modalAbilitiesGrid.innerHTML = ''; 
 
-        // Seleciona todos os grupos de habilidade do card clicado
         const abilityGroups = card.querySelectorAll('.ability-group');
 
         if(abilityGroups.length > 0) {
@@ -180,28 +243,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const abilityCard = document.createElement('div');
                 abilityCard.className = 'modal-ability-card';
 
-                // 1. Pega o Título
                 const titleEl = group.querySelector('.ability-name');
                 const titleText = titleEl ? titleEl.innerText : 'Habilidade';
                 
-                // 2. Pega a Lista (ul)
                 const listEl = group.querySelector('ul');
-                
-                // 3. Pega a Nota/Descrição (NOVA LÓGICA)
                 const noteEl = group.querySelector('.ability-note');
 
-                // Monta o HTML
                 let cardHTML = `<div class="modal-ability-title">${titleText}</div>`;
                 
-                if (listEl) {
-                    cardHTML += listEl.outerHTML; 
-                }
-
-                // Se houver uma nota, adiciona ela (removendo o display:none implícito)
-                if (noteEl) {
-                    // Criamos um novo parágrafo com uma classe específica para o modal
-                    cardHTML += `<p class="modal-ability-note">${noteEl.innerHTML}</p>`;
-                }
+                if (listEl) cardHTML += listEl.outerHTML; 
+                if (noteEl) cardHTML += `<p class="modal-ability-note">${noteEl.innerHTML}</p>`;
 
                 abilityCard.innerHTML = cardHTML;
                 modalAbilitiesGrid.appendChild(abilityCard);
@@ -210,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
             modalAbilitiesGrid.innerHTML = '<p style="color: var(--text-muted)">Nenhuma alteração específica listada.</p>';
         }
 
-        // Aplicar Cores Dinâmicas
         modalContent.className = 'modal-content theme-dynamic';
         const colors = agentColors[name.toLowerCase()] || agentColors['default'];
 
@@ -219,14 +269,11 @@ document.addEventListener('DOMContentLoaded', () => {
         modalContent.style.setProperty('--theme-p2', colors.p2);
         modalContent.style.setProperty('--theme-p3', colors.p3);
 
-        // Mostrar Modal
         modal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Trava scroll da página
+        document.body.style.overflow = 'hidden'; 
     }
 
-    // --- 5. Event Listeners do Modal (A parte que faltava) ---
-    
-    // Adiciona o evento de clique em CADA card
+    // --- 5. Event Listeners do Modal ---
     cards.forEach(card => {
         card.style.cursor = 'pointer'; 
         card.addEventListener('click', () => {
@@ -234,44 +281,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Função para fechar o modal
     function closeModalFunc() {
         modal.classList.remove('active');
-        document.body.style.overflow = 'auto'; // Destrava scroll da página
+        document.body.style.overflow = 'auto'; 
     }
 
     closeModal.addEventListener('click', closeModalFunc);
-
-    // Fecha ao clicar fora
     modal.addEventListener('click', (e) => {
         if (e.target === modal) closeModalFunc();
     });
-
-    // Fecha com ESC
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
             closeModalFunc();
         }
     });
 
-    // --- 6. Lógica do Comms Channel (Chat) ---
-    const scrollTopBtn = document.getElementById('scrollTopBtn');
-    const scrollToChatBtn = document.getElementById('scrollToChatBtn');
-    const commsSection = document.querySelector('.comms-section');
-
+    // --- 6. Lógica dos Botões Flutuantes ---
+    
     // 6.1 - Botão "Ir para Chat"
-    scrollToChatBtn.addEventListener('click', () => {
-        commsSection.scrollIntoView({ behavior: 'smooth' });
-        // Foca no input de mensagem para agilidade
-        setTimeout(() => document.getElementById('commsInput').focus(), 800);
-    });
+    if(scrollToChatBtn && commsSection) {
+        scrollToChatBtn.addEventListener('click', () => {
+            commsSection.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => commsInput.focus(), 800);
+        });
+    }
 
     // 6.2 - Botão "Subir Tudo"
-    scrollTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    if(scrollTopBtn) {
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 
-    // 6.3 - Mostrar/Esconder botão de subir baseando no scroll
+    // 6.3 - Mostrar/Esconder botão de subir
     window.addEventListener('scroll', () => {
         if (window.scrollY > 300) {
             scrollTopBtn.classList.remove('hidden');
@@ -280,12 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 7. Lógica do Comms Channel (Chat Atualizado) ---
-    const commsForm = document.getElementById('commsForm');
-    const commsInput = document.getElementById('commsInput');
-    const commsNameInput = document.getElementById('commsName'); // Novo input de nome
-    const commsFeed = document.getElementById('commsFeed');
-
+    // --- 7. Lógica do Chat ---
     const randomAgents = ["Jett", "Sage", "Cypher", "Brimstone", "Viper", "Sova", "Omen", "Reyna"];
 
     function addMessageToFeed(name, text, isSystem = false) {
@@ -303,13 +340,11 @@ document.addEventListener('DOMContentLoaded', () => {
         commsFeed.scrollTop = commsFeed.scrollHeight;
     }
 
-    // Carregar mensagens salvas
     const savedMessages = JSON.parse(localStorage.getItem('valorant_patch_comments')) || [];
     if(savedMessages.length > 0) {
         savedMessages.forEach(msg => addMessageToFeed(msg.name, msg.text));
     }
 
-    // Enviar Nova Mensagem
     commsForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
@@ -318,7 +353,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if(!text) return;
 
-        // LÓGICA DE NOME: Se o usuário digitou, usa o dele. Se não, aleatório.
         let finalName;
         if (customName.length > 0) {
             finalName = customName;
@@ -335,7 +369,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('valorant_patch_comments', JSON.stringify(savedMessages));
 
         commsInput.value = '';
-        // Não limpamos o campo de nome, para o usuário não precisar redigitar
     });
 
 });

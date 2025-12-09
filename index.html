@@ -13,6 +13,15 @@
     <div class="bg-shape-1"></div>
     <div class="bg-shape-2"></div>
     <header class="valorant-header">
+    <div class="lang-switch-container">
+        <div id="langToggle" class="valorant-toggle" role="button" tabindex="0">
+            <div class="toggle-track">
+                <span class="toggle-label label-pt">PT</span>
+                <span class="toggle-label label-en">EN</span>
+            </div>
+            <div class="toggle-slider"></div>
+        </div>
+    </div>
     <div class="header-bg-grid"></div>
     <div class="header-decoration-left"></div>
     <div class="header-decoration-right"></div>
@@ -23,12 +32,16 @@
         </div>
 
         <h1 class="glitch-title" data-text="ATUALIZAÇÕES DE AGENTES">
-            Atualizações de Agentes
+            <span class="text-pt">Atualizações de Agentes</span>
+            <span class="text-en">Agent Updates</span>
         </h1>
         
         <div class="subtitle-container">
             <span class="line"></span>
-            <p>Ideias de balanceamento</p>
+            <p>
+                <span class="text-pt">Ideias de balanceamento</span>
+                <span class="text-en">Balancing Ideas</span>
+            </p>
             <span class="line"></span>
         </div>
     </div>
@@ -39,8 +52,12 @@
         <input type="search" id="searchInput" required placeholder="Buscar agente...">
     </form>
     
-    <button class="filter-btn active" data-filter="all">Todos</button>
-    <button class="filter-btn" data-filter="initiator">Iniciadores</button>
+    <button class="filter-btn active" data-filter="all">
+    <span class="text-pt">Todos</span><span class="text-en">All</span>
+</button>
+<button class="filter-btn" data-filter="initiator">
+    <span class="text-pt">Iniciadores</span><span class="text-en">Initiators</span>
+</button>
     <button class="filter-btn" data-filter="duelist">Duelistas</button>
     <button class="filter-btn" data-filter="controller">Controladores</button>
     <button class="filter-btn" data-filter="sentinel">Sentinelas</button>
@@ -71,17 +88,24 @@
                             <span class="agent-class">Iniciador</span>
                         </h3>
                         <div class="ability-group">
-                            <span class="ability-name">Aftershock (C)</span>
-                            <ul>
-                                <li class="buff">Tempo de preparação (Windup) reduzido: 2.2s → 2s</li>
-                            </ul>
-                            <p class="ability-note" style="display:none">O longo tempo de ativação do Aftershock o torna uma habilidade excessivamente lenta e raramente letal. Reduzir seu tempo de preparo (windup) é a chave para aumentar sua letalidade efetiva.</p>
+    <span class="ability-name">Aftershock (C)</span>
+    <ul>
+        <li class="buff">
+            <span class="text-pt">Tempo de preparação (Windup) reduzido: 2.2s → 2s</span>
+            <span class="text-en">Windup time reduced: 2.2s → 2s</span>
+        </li>
+    </ul>
+    
+    <p class="ability-note" style="display:none">
+        <span class="text-pt">O longo tempo de ativação do Aftershock o torna...</span>
+        <span class="text-en">Aftershock's long windup time makes it...</span>
+    </p>
+</div>
 
-                        </div>
-
-                        <div class="agent-reason" style="display: none;">
-                            Com uma taxa de vitória não espelhada de apenas 48,64% (22ª posição entre os agentes), o Breach claramente precisava de ajustes. Por isso, as mudanças em seu kit foram propositalmente focadas em buffs individuais.
-                        </div>
+<div class="agent-reason" style="display: none;">
+    <span class="text-pt">Com uma taxa de vitória de apenas 48%...</span>
+    <span class="text-en">With a win rate of only 48%...</span>
+</div>
 
                         <div class="ability-group">
                             <span class="ability-name">Flashpoint (Q)</span>

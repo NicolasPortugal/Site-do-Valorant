@@ -1328,3 +1328,122 @@ input[type="search"]::-webkit-search-cancel-button {
     .name-field { width: 90px; font-size: 0.8rem; }
     .input-prefix { display: none; } /* Esconde prefixo no mobile */
 }
+
+.lang-switch-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.lang-btn {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-family: 'Oswald', sans-serif;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.lang-btn:hover {
+    color: var(--text-main);
+    border-color: var(--text-main);
+}
+
+.lang-btn.active {
+    background: var(--accent-red);
+    color: white;
+    border-color: var(--accent-red);
+}
+
+/* Lógica de Exibição de Idioma */
+/* Se o body tem a classe 'lang-pt', esconde elementos em inglês */
+body.lang-pt .text-en {
+    display: none !important;
+}
+
+/* Se o body tem a classe 'lang-en', esconde elementos em português */
+body.lang-en .text-pt {
+    display: none !important;
+}
+
+.valorant-toggle {
+    position: relative;
+    width: 90px;
+    height: 32px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    overflow: hidden; /* Mantém o slider dentro das bordas */
+    
+    /* Corte angular (Estilo Tático) */
+    transform: skewX(-15deg);
+    transition: border-color 0.3s ease;
+}
+
+.valorant-toggle:hover {
+    border-color: var(--text-main);
+}
+
+/* O fundo com os textos (PT / EN) */
+.toggle-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2; /* Fica acima do slider vermelho */
+    pointer-events: none; /* O clique vai para o container pai */
+}
+
+.toggle-label {
+    flex: 1;
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted); /* Cor padrão (inativo) */
+    transition: color 0.3s ease;
+    
+    /* Desfaz o skew do container para o texto ficar reto */
+    transform: skewX(15deg); 
+}
+
+/* O bloco vermelho que desliza */
+.toggle-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%; /* Metade do tamanho */
+    height: 100%;
+    background: var(--accent-red);
+    z-index: 1;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); /* Animação suave */
+    box-shadow: 0 0 10px rgba(255, 70, 85, 0.4);
+}
+
+/* --- ESTADOS (Controlados pela classe no body) --- */
+
+/* Estado: Português (PT) */
+body.lang-pt .valorant-toggle .toggle-slider {
+    transform: translateX(0%);
+}
+body.lang-pt .valorant-toggle .label-pt {
+    color: #fff; /* Texto ativo fica branco */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+/* Estado: Inglês (EN) */
+body.lang-en .valorant-toggle .toggle-slider {
+    transform: translateX(100%); /* Move para a direita */
+}
+body.lang-en .valorant-toggle .label-en {
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
