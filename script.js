@@ -1,3 +1,21 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// --- CONFIGURAÇÃO DO FIREBASE ---
+// Cole aqui os dados que você pegou no Passo 3
+const firebaseConfig = {
+  apiKey: "AIzaSyAqYc6bqgKCPJTqlftN9dv7PXq2r530fEc",
+  authDomain: "site-comms.firebaseapp.com",
+  projectId: "site-comms",
+  storageBucket: "site-comms.firebasestorage.app",
+  messagingSenderId: "117765199744",
+  appId: "1:117765199744:web:b2aecb64386440ba3f1365"
+};
+
+// Inicializa o Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- 1. Seleção de Elementos (MOVIDO PARA O TOPO) ---
@@ -322,30 +340,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 7. Lógica do Chat ---
+    // --- 7. Lógica do Chat (COM FIREBASE) ---
     const randomAgents = ["Jett", "Sage", "Cypher", "Brimstone", "Viper", "Sova", "Omen", "Reyna"];
 
-    function addMessageToFeed(name, text, isSystem = false) {
+    // Função para renderizar mensagem na tela (apenas visual)
+    function renderMessage(id, data) {
+        // Evita duplicatas se a mensagem já existe
+        if (document.getElementById(id)) return;
+
         const msgDiv = document.createElement('div');
+        // Se a mensagem for 'SYSTEM', aplica o estilo de sistema
+        const isSystem = data.name === '[SYSTEM]';
         msgDiv.className = isSystem ? 'chat-message system' : 'chat-message';
-        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        msgDiv.id = id; // ID único do Firestore
+
+        // Formata a data (Firebase usa Timestamp, convertemos para JS Date)
+        let timeString = '';
+        if (data.timestamp) {
+            const date = data.timestamp.toDate(); 
+            timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
 
         msgDiv.innerHTML = `
-            <span class="chat-sender">${name}</span>
-            <span class="chat-text">${text}</span>
-            <span class="chat-timestamp">${time}</span>
+            <span class="chat-sender">${data.name}</span>
+            <span class="chat-text">${data.text}</span>
+            <span class="chat-timestamp">${timeString}</span>
         `;
         
         commsFeed.appendChild(msgDiv);
-        commsFeed.scrollTop = commsFeed.scrollHeight;
+        commsFeed.scrollTop = commsFeed.scrollHeight; // Rola para baixo
     }
 
-    const savedMessages = JSON.parse(localStorage.getItem('valorant_patch_comments')) || [];
-    if(savedMessages.length > 0) {
-        savedMessages.forEach(msg => addMessageToFeed(msg.name, msg.text));
-    }
+    // --- ESCUTAR MENSAGENS EM TEMPO REAL ---
+    // Isso substitui o localStorage.getItem. 
+    // O onSnapshot roda toda vez que alguém posta algo novo no banco.
+    const q = query(collection(db, "comms_channel"), orderBy("timestamp", "asc"), limit(50));
+    
+    onSnapshot(q, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+                renderMessage(change.doc.id, change.doc.data());
+            }
+        });
+    });
 
-    commsForm.addEventListener('submit', (e) => {
+    // --- ENVIAR MENSAGEM ---
+    commsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const text = commsInput.value.trim();
@@ -360,15 +400,21 @@ document.addEventListener('DOMContentLoaded', () => {
             finalName = randomAgents[Math.floor(Math.random() * randomAgents.length)];
         }
 
-        addMessageToFeed(finalName, text);
-
-        const newMsg = { name: finalName, text: text, date: new Date().toISOString() };
-        savedMessages.push(newMsg);
-        
-        if(savedMessages.length > 50) savedMessages.shift();
-        localStorage.setItem('valorant_patch_comments', JSON.stringify(savedMessages));
-
+        // Limpa o input imediatamente para melhor UX
         commsInput.value = '';
+
+        try {
+            // Salva no Firestore (Nuvem)
+            await addDoc(collection(db, "comms_channel"), {
+                name: finalName,
+                text: text,
+                timestamp: new Date() // Salva o horário do servidor
+            });
+            console.log("Mensagem enviada para o banco!");
+        } catch (error) {
+            console.error("Erro ao enviar mensagem: ", error);
+            alert("Erro de conexão com o servidor da Riot (Firebase). Tente novamente.");
+        }
     });
 
 });
