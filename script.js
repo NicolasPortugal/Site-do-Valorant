@@ -254,4 +254,88 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- 6. Lógica do Comms Channel (Chat) ---
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    const scrollToChatBtn = document.getElementById('scrollToChatBtn');
+    const commsSection = document.querySelector('.comms-section');
+
+    // 6.1 - Botão "Ir para Chat"
+    scrollToChatBtn.addEventListener('click', () => {
+        commsSection.scrollIntoView({ behavior: 'smooth' });
+        // Foca no input de mensagem para agilidade
+        setTimeout(() => document.getElementById('commsInput').focus(), 800);
+    });
+
+    // 6.2 - Botão "Subir Tudo"
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 6.3 - Mostrar/Esconder botão de subir baseando no scroll
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            scrollTopBtn.classList.remove('hidden');
+        } else {
+            scrollTopBtn.classList.add('hidden');
+        }
+    });
+
+    // --- 7. Lógica do Comms Channel (Chat Atualizado) ---
+    const commsForm = document.getElementById('commsForm');
+    const commsInput = document.getElementById('commsInput');
+    const commsNameInput = document.getElementById('commsName'); // Novo input de nome
+    const commsFeed = document.getElementById('commsFeed');
+
+    const randomAgents = ["Jett", "Sage", "Cypher", "Brimstone", "Viper", "Sova", "Omen", "Reyna"];
+
+    function addMessageToFeed(name, text, isSystem = false) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = isSystem ? 'chat-message system' : 'chat-message';
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        msgDiv.innerHTML = `
+            <span class="chat-sender">${name}</span>
+            <span class="chat-text">${text}</span>
+            <span class="chat-timestamp">${time}</span>
+        `;
+        
+        commsFeed.appendChild(msgDiv);
+        commsFeed.scrollTop = commsFeed.scrollHeight;
+    }
+
+    // Carregar mensagens salvas
+    const savedMessages = JSON.parse(localStorage.getItem('valorant_patch_comments')) || [];
+    if(savedMessages.length > 0) {
+        savedMessages.forEach(msg => addMessageToFeed(msg.name, msg.text));
+    }
+
+    // Enviar Nova Mensagem
+    commsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const text = commsInput.value.trim();
+        const customName = commsNameInput.value.trim();
+        
+        if(!text) return;
+
+        // LÓGICA DE NOME: Se o usuário digitou, usa o dele. Se não, aleatório.
+        let finalName;
+        if (customName.length > 0) {
+            finalName = customName;
+        } else {
+            finalName = randomAgents[Math.floor(Math.random() * randomAgents.length)];
+        }
+
+        addMessageToFeed(finalName, text);
+
+        const newMsg = { name: finalName, text: text, date: new Date().toISOString() };
+        savedMessages.push(newMsg);
+        
+        if(savedMessages.length > 50) savedMessages.shift();
+        localStorage.setItem('valorant_patch_comments', JSON.stringify(savedMessages));
+
+        commsInput.value = '';
+        // Não limpamos o campo de nome, para o usuário não precisar redigitar
+    });
+
 });

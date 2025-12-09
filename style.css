@@ -1000,3 +1000,331 @@ input[type="search"]::-webkit-search-cancel-button {
     font-size: 0.9rem;
     display: block; /* Garante que apareça */
 }
+
+
+/* =========================================
+   SEÇÃO DE COMMS (COMENTÁRIOS)
+   ========================================= */
+.comms-section {
+    margin-bottom: 4rem;
+    padding: 0 1rem;
+}
+
+.comms-container {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    backdrop-filter: blur(5px);
+    max-width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+/* Área onde aparecem as mensagens */
+.comms-feed {
+    height: 300px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    scroll-behavior: smooth;
+}
+
+/* Estilização da Barra de Rolagem do Chat */
+.comms-feed::-webkit-scrollbar { width: 6px; }
+.comms-feed::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+.comms-feed::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+
+/* Estilo das Mensagens Individuais */
+.chat-message {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid var(--text-muted);
+    animation: fadeInMsg 0.3s ease-out;
+}
+
+@keyframes fadeInMsg {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-sender {
+    font-weight: 700;
+    color: var(--accent-yellow); /* Nome em Amarelo */
+    margin-right: 0.5rem;
+    text-transform: uppercase;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.chat-message.system {
+    border-left-color: var(--accent-red);
+    background: rgba(255, 70, 85, 0.1);
+}
+.chat-message.system .chat-sender { color: var(--accent-red); }
+
+.chat-text { color: var(--text-main); }
+.chat-timestamp {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    float: right;
+    margin-left: 10px;
+    opacity: 0.5;
+}
+
+/* Área de Input (Formulário) */
+.comms-input-area {
+    display: flex;
+    border-top: 1px solid var(--border-color);
+    background: rgba(0,0,0,0.6);
+}
+
+.input-wrapper {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.input-prefix {
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+}
+
+#commsInput {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 1rem 0;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    outline: none;
+}
+
+.btn-send {
+    background: var(--accent-red);
+    color: white;
+    border: none;
+    padding: 0 2rem;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%); /* Corte diagonal */
+}
+
+.btn-send:hover {
+    background: white;
+    color: black;
+}
+
+/* =========================================
+   RODAPÉ (FOOTER)
+   ========================================= */
+.valorant-footer {
+    background: #111;
+    border-top: 4px solid var(--accent-red);
+    padding: 3rem 1rem 1rem 1rem;
+    margin-top: 4rem;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+}
+
+.footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.footer-title {
+    font-family: 'Oswald', sans-serif;
+    color: var(--text-main);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+/* Lista de Créditos */
+.footer-list { list-style: none; }
+.footer-list li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+    border-bottom: 1px dashed rgba(255,255,255,0.1);
+    padding-bottom: 0.2rem;
+}
+
+.footer-list .label { color: var(--text-muted); font-weight: 600; }
+.footer-list .value { color: var(--text-main); font-family: 'Oswald', sans-serif; letter-spacing: 1px; }
+
+/* Botões Sociais */
+.social-links { display: flex; flex-direction: column; gap: 0.5rem; }
+.social-btn {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border-left: 2px solid transparent;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.social-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-left-color: var(--accent-red);
+    color: var(--text-main);
+    padding-left: 1.5rem; /* Slide effect */
+}
+
+/* Disclaimer */
+.disclaimer-col p {
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.5;
+}
+.footer-logo {
+    width: 40px;
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+/* Barra Final */
+.footer-bar {
+    max-width: 1200px;
+    margin: 0 auto;
+    border-top: 1px solid #333;
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 600px) {
+    .footer-bar { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .comms-container { margin: 0 10px; }
+}
+
+.floating-dock {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 900; /* Acima do footer, abaixo do modal */
+}
+
+.float-btn {
+    width: 50px;
+    height: 50px;
+    background: rgba(15, 25, 35, 0.9);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    
+    /* Estilo Tático Valorant */
+    clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%, 0% 20%);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+/* Efeito Hover */
+.float-btn:hover {
+    background: var(--accent-red);
+    border-color: var(--accent-red);
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px rgba(255, 70, 85, 0.4);
+}
+
+/* Ícone de Seta */
+.icon-arrow { font-size: 0.8rem; }
+
+/* Ocultar botão de subir quando estiver no topo */
+.float-btn.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+}
+
+/* =========================================
+   ATUALIZAÇÃO: FORMULÁRIO DE CHAT (Layout)
+   ========================================= */
+.comms-input-area {
+    background: rgba(15, 25, 35, 0.95); /* Mais escuro para contraste */
+}
+
+/* Removemos o estilo antigo do input único e criamos classes novas */
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 1rem;
+    width: 100%;
+}
+
+.input-field {
+    background: transparent;
+    border: none;
+    padding: 1rem 0;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    outline: none;
+}
+
+/* Estilo do Input de Nome */
+.name-field {
+    width: 140px; /* Largura fixa para o nome */
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    color: var(--accent-yellow);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+.name-field::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+    text-transform: none;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Divisor visual entre nome e mensagem */
+.divider {
+    color: var(--border-color);
+    font-size: 1.2rem;
+    margin-top: -2px;
+}
+
+/* Estilo do Input de Mensagem (ocupa o resto) */
+.msg-field {
+    flex-grow: 1;
+}
+
+/* Responsividade para Mobile */
+@media (max-width: 600px) {
+    .floating-dock { bottom: 20px; right: 15px; }
+    .float-btn { width: 40px; height: 40px; font-size: 1rem; }
+    
+    /* No celular, empilhar nome e mensagem ou encurtar o nome */
+    .name-field { width: 90px; font-size: 0.8rem; }
+    .input-prefix { display: none; } /* Esconde prefixo no mobile */
+}

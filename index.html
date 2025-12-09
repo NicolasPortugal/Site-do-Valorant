@@ -812,7 +812,76 @@
         </div>
 
     </div>
+    </div> <section class="comms-section">
+        <div class="container">
+            <h2 class="section-title">Comms Channel <span style="font-size:0.5em; color:var(--text-muted); vertical-align:middle;">// FEED DA COMUNIDADE</span></h2>
+            
+            <div class="comms-container">
+                <div id="commsFeed" class="comms-feed">
+                    <div class="chat-message system">
+                        <span class="chat-sender">[SYSTEM]</span>
+                        <span class="chat-text">Bem-vindo ao canal de feedback. Mantenha a comunicação limpa.</span>
+                    </div>
+                    </div>
 
+                <form id="commsForm" class="comms-input-area">
+                    <div class="input-wrapper">
+                        <span class="input-prefix">///</span>
+                        
+                        <input type="text" id="commsName" class="input-field name-field" placeholder="CODENAME (Opcional)" maxlength="12" autocomplete="off">
+                        
+                        <span class="divider">|</span>
+
+                        <input type="text" id="commsInput" class="input-field msg-field" placeholder="Digite sua mensagem..." required autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn-send">ENVIAR</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="valorant-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 class="footer-title">PROJECT DATA</h4>
+                <ul class="footer-list">
+                    <li>
+                        <span class="label">DEVELOPER</span>
+                        <span class="value">Tomada</span>
+                    </li>
+                    <li>
+                        <span class="label">THEORYCRAFT</span>
+                        <span class="value">Gatinho</span>
+                    </li>
+                    <li>
+                        <span class="label">VERSION</span>
+                        <span class="value">xxxx</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-title">UPLINK</h4>
+                <div class="social-links">
+                    <a href="#" class="social-btn">Twitter / X</a>
+                    <a href="#" class="social-btn">Discord</a>
+                    <a href="#" class="social-btn">GitHub</a>
+                </div>
+            </div>
+
+            <div class="footer-col disclaimer-col">
+                <img src="img/Valorant_logo_-_pink_color_version_(cropped).png" alt="Logo Pequeno" class="footer-logo">
+                <p>
+                    Este é um projeto feito por fãs e não é afiliado à Riot Games. 
+                    Valorant e todos os ativos visuais associados são propriedades da Riot Games.
+                </p>
+            </div>
+        </div>
+        <div class="footer-bar">
+            <span>COPYRIGHT © 2025 // FAN MADE PROJECT</span>
+            <span class="server-status">SERVER STATUS: <span style="color:var(--accent-green)">ONLINE</span></span>
+        </div>
+    </footer>
     <div id="agentModal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -839,6 +908,15 @@
                     </div>
             </div>
         </div>
+    </div>
+
+    <div class="floating-dock">
+        <button id="scrollTopBtn" class="float-btn hidden" title="Subir ao Topo">
+            <span class="icon-arrow">▲</span>
+        </button>
+        <button id="scrollToChatBtn" class="float-btn" title="Ir para Comentários">
+            <span class="icon-chat">💬</span>
+        </button>
     </div>
 
     <script src="script.js"></script>
