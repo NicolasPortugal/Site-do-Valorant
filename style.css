@@ -144,24 +144,28 @@
 
 /* A marca "V" decorativa */
 .brand-mark {
-    width: 50px;
-    height: 50px;
-    background: var(--accent-red);
+    width: 80px;  /* Tamanho do container */
+    height: 80px;
+    background: transparent; /* GARANTE QUE O FUNDO SEJA INVISÍVEL */
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 1.5rem;
-    box-shadow: 0 0 15px rgba(255, 70, 85, 0.4);
-    transform: rotate(45deg); /* Losango */
+    /* Glow vermelho circular atrás do logo */
+   
 }
 
-.mark-v {
-    font-family: 'Oswald', sans-serif;
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: white;
-    transform: rotate(-45deg); /* Texto reto dentro do losango */
+/* A imagem do logo em si */
+.brand-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Garante que o logo não distorça */
+    /* Adiciona um brilho vermelho na própria imagem */
+    filter: drop-shadow(0 0 5px var(--accent-red));
+    transform: scale(0.8); /* Diminui um pouco a imagem dentro do brilho */
 }
+/* A classe .mark-v foi removida pois não é mais necessária */
+
 
 /* Título com Efeito Glitch */
 .glitch-title {
