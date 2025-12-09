@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- 7. Lógica do Chat (COM FIREBASE) ---
-    const randomAgents = ["Jett", "Sage", "Cypher", "Brimstone", "Viper", "Sova", "Omen", "Reyna"];
+    const randomAgents = ["Brimstone", "Viper", "Omen", "Killjoy", "Cypher", "Sova", "Sage", "Phoenix", "Jett", "Reyna", "Raze", "Breach", "Skye", "Yoru", "Astra", "KAY/O", "Chamber", "Neon", "Fade", "Harbor", "Gekko", "Deadlock", "Iso", "Clove", "Vyse", "Tejo", "Waylay", "Veto"];
 
     // Função para renderizar mensagem na tela (apenas visual)
     function renderMessage(id, data) {
