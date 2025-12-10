@@ -344,25 +344,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const randomAgents = ["Brimstone", "Viper", "Omen", "Killjoy", "Cypher", "Sova", "Sage", "Phoenix", "Jett", "Reyna", "Raze", "Breach", "Skye", "Yoru", "Astra", "KAY/O", "Chamber", "Neon", "Fade", "Harbor", "Gekko", "Deadlock", "Iso", "Clove", "Vyse", "Tejo", "Waylay", "Veto"];
 
     // Função para renderizar mensagem na tela (apenas visual)
+    const chatNameColors = [
+        '#ff4655', // Valorant Red
+        '#17e588', // Viper Green
+        '#ffce00', // Killjoy Yellow
+        '#58a0f0', // Sova Blue
+        '#e58bf5', // Reyna Purple
+        '#ffae00', // Raze Orange
+        '#40e0d0', // Sage Teal
+        '#a4f0f5', // Jett Cyan
+        '#ffffff'  // White
+    ];
+
+    // Função para renderizar mensagem na tela
     function renderMessage(id, data) {
         // Evita duplicatas se a mensagem já existe
         if (document.getElementById(id)) return;
 
         const msgDiv = document.createElement('div');
+        
         // Se a mensagem for 'SYSTEM', aplica o estilo de sistema
         const isSystem = data.name === '[SYSTEM]';
         msgDiv.className = isSystem ? 'chat-message system' : 'chat-message';
         msgDiv.id = id; // ID único do Firestore
 
-        // Formata a data (Firebase usa Timestamp, convertemos para JS Date)
+        // --- LÓGICA DE COR ALEATÓRIA ---
+        let colorStyle = '';
+        
+        if (!isSystem) {
+            // Se NÃO for sistema, sorteia uma cor da lista
+            const randomColor = chatNameColors[Math.floor(Math.random() * chatNameColors.length)];
+            colorStyle = `style="color: ${randomColor};"`;
+        }
+        // Se for System, a variável colorStyle fica vazia e o CSS define a cor (vermelho)
+
+        // Formata a data
         let timeString = '';
         if (data.timestamp) {
             const date = data.timestamp.toDate(); 
             timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
+        // Injeta o HTML com a cor sorteada no span 'chat-sender'
         msgDiv.innerHTML = `
-            <span class="chat-sender">${data.name}</span>
+            <span class="chat-sender" ${colorStyle}>${data.name}</span>
             <span class="chat-text">${data.text}</span>
             <span class="chat-timestamp">${timeString}</span>
         `;
@@ -387,19 +412,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Lógica de Teclas para o Textarea (Enter envia, Shift+Enter pula linha) ---
     if (commsInput) {
+        const MAX_LINES = 5;
+
+        // 1. Bloqueia a criação de novas linhas se já tiver 5 (no pressionar de teclas)
         commsInput.addEventListener('keydown', (e) => {
-            // Se apertar ENTER
+            // Conta quantas linhas existem atualmente
+            const currentLines = commsInput.value.split('\n').length;
+
             if (e.key === 'Enter') {
-                // Se estiver segurando SHIFT ou CTRL, deixa o comportamento padrão (pular linha)
-                if (e.shiftKey || e.ctrlKey) {
-                    return; 
-                } 
-                // Caso contrário (apenas ENTER), previne a quebra de linha e envia
-                else {
+                // Se NÃO estiver segurando Shift ou Ctrl -> Tenta ENVIAR
+                if (!e.shiftKey && !e.ctrlKey) {
                     e.preventDefault();
-                    // Dispara o evento de submit do formulário manualmente
                     commsForm.requestSubmit();
+                } 
+                // Se estiver segurando Shift (tentando pular linha) -> Verifica o limite
+                else {
+                    if (currentLines >= MAX_LINES) {
+                        e.preventDefault(); // Impede a criação da 6ª linha
+                        
+                        // Opcional: Feedback visual (piscar borda vermelha)
+                        commsInput.style.borderColor = 'var(--accent-red)';
+                        setTimeout(() => commsInput.style.borderColor = '', 200);
+                    }
                 }
+            }
+        });
+
+        // 2. Garante o limite ao colar texto (Paste)
+        commsInput.addEventListener('input', (e) => {
+            const lines = commsInput.value.split('\n');
+            
+            if (lines.length > MAX_LINES) {
+                // Se tiver mais que 5 linhas, corta o excesso e junta de volta
+                commsInput.value = lines.slice(0, MAX_LINES).join('\n');
+                
+                // Feedback visual
+                commsInput.style.borderColor = 'var(--accent-red)';
+                setTimeout(() => commsInput.style.borderColor = '', 200);
             }
         });
     }
