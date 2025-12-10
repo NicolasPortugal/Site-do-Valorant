@@ -47,21 +47,59 @@
     </div>
 </header>
 
-    <div class="controls">
-    <form id="searchForm" class="search-form-container">
-        <input type="search" id="searchInput" required placeholder="Buscar agente..." maxlength="10">
-    </form>
-    
-    <button class="filter-btn active" data-filter="all">
-    <span class="text-pt">Todos</span><span class="text-en">All</span>
-</button>
-<button class="filter-btn" data-filter="initiator">
-    <span class="text-pt">Iniciadores</span><span class="text-en">Initiators</span>
-</button>
-    <button class="filter-btn" data-filter="duelist">Duelistas</button>
-    <button class="filter-btn" data-filter="controller">Controladores</button>
-    <button class="filter-btn" data-filter="sentinel">Sentinelas</button>
-</div>
+    <div id="metaAnalytics" class="meta-analytics-section">
+        <div class="meta-hud-box">
+            <div class="meta-hud-header">
+                <div class="header-left">
+                    <div class="meta-hud-title">
+                        <span class="icon-stat">📊</span> 
+                        GLOBAL AGENT DATA
+                    </div>
+                    <div class="meta-subtitle">// LAST 30 DAYS • COMPETITIVE</div>
+                </div>
+
+                <div class="meta-controls-wrapper">
+                    <div class="meta-sort-box">
+                        <span class="control-label">SORT BY:</span>
+                        <select id="metaSortSelect" class="meta-select-modern">
+                            <option value="desc">High Win Rate ▼</option>
+                            <option value="asc">Low Win Rate ▲</option>
+                            <option value="az">A-Z</option>
+                        </select>
+                    </div>
+
+                    <div class="meta-separator"></div>
+
+                    <div class="meta-filter-group-modern">
+                        <button class="meta-filter-btn active" data-meta-filter="all">ALL</button>
+                        <button class="meta-filter-btn" data-meta-filter="duelist" title="Duelistas">
+                            <img src="img/duelista.png" alt="D">
+                        </button>
+                        <button class="meta-filter-btn" data-meta-filter="initiator" title="Iniciadores">
+                            <img src="img/iniciador.png" alt="I">
+                        </button>
+                        <button class="meta-filter-btn" data-meta-filter="controller" title="Controladores">
+                            <img src="img/controlador.png" alt="C">
+                        </button>
+                        <button class="meta-filter-btn" data-meta-filter="sentinel" title="Sentinelas">
+                            <img src="img/sentinela.png" alt="S">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-wrapper">
+                <button id="scrollLeftBtn" class="nav-btn prev">❮</button>
+                
+                <div id="metaScrollContainer" class="meta-scroll-container">
+                    <div id="metaTopGrid" class="meta-scroll-track">
+                        </div>
+                </div>
+
+                <button id="scrollRightBtn" class="nav-btn next">❯</button>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
 
@@ -89,6 +127,22 @@
                         </ul>
                 </div>
             </div>
+        </div>
+
+        <div class="controls">
+            <form id="searchForm" class="search-form-container">
+                <input type="search" id="searchInput" required placeholder="Buscar agente..." maxlength="10">
+            </form>
+            
+            <button class="filter-btn active" data-filter="all">
+            <span class="text-pt">Todos</span><span class="text-en">All</span>
+        </button>
+        <button class="filter-btn" data-filter="initiator">
+            <span class="text-pt">Iniciadores</span><span class="text-en">Initiators</span>
+        </button>
+            <button class="filter-btn" data-filter="duelist">Duelistas</button>
+            <button class="filter-btn" data-filter="controller">Controladores</button>
+            <button class="filter-btn" data-filter="sentinel">Sentinelas</button>
         </div>
 
         <div id="initiator-section" class="class-section" data-class="initiator">
@@ -932,17 +986,23 @@
             <div class="modal-scroll-container">
                 <div class="modal-header">
                     <div class="header-decoration-line"></div>
+                    
                     <div class="agent-portrait">
                         <img id="modalImg" src="" alt="Agente">
                         <div class="img-overlay"></div>
                     </div>
+                    
                     <div class="header-info">
-                        <span id="modalClass" class="modal-class-badge">Classe</span>
-                        <h2 id="modalTitle">NOME DO AGENTE</h2>
-                        <div class="header-meta">
-                            <span>// PROJECT_ID: VAL-2025</span>
-                            <span>// STATUS: UPDATED</span>
+                        <div class="header-text-group">
+                            <span id="modalClass" class="modal-class-badge">Classe</span>
+                            <h2 id="modalTitle">NOME DO AGENTE</h2>
+                            <div class="header-meta">
+                                <span>// PROJECT_ID: VAL-2025</span>
+                            </div>
                         </div>
+
+                        <div id="modalStatsBox" class="modal-live-stats">
+                            </div>
                     </div>
                 </div>
                 

@@ -780,9 +780,19 @@ input[type="search"]::-webkit-search-cancel-button {
 /* Informações do Header */
 .header-info {
     display: flex;
-    flex-direction: column;
-    padding-bottom: 10px; /* Ajuste visual */
+    justify-content: space-between; /* Joga um pra esquerda, um pra direita */
+    align-items: flex-end; /* Alinha pela base (fica mais bonito com fontes grandes) */
     width: 100%;
+    padding-bottom: 10px;
+    position: relative;
+    gap: 2rem; /* Espaço mínimo entre nome e stats */
+}
+
+/* Garante que o texto ocupe o espaço necessário, mas não empurre demais */
+.header-text-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .modal-class-badge {
@@ -1892,4 +1902,643 @@ textarea.msg-field::-webkit-scrollbar-thumb {
 /* Ajuste Mobile */
 @media (max-width: 600px) {
     .univ-content ul { grid-template-columns: 1fr; }
+}
+
+/* --- NOVA SEÇÃO: META ANALYTICS (Topo) --- */
+/* --- META ANALYTICS (REMASTERED) --- */
+.meta-analytics-section {
+    max-width: 1200px;
+    margin: 2rem auto 0 auto;
+    padding: 0 1rem;
+    display: none;
+    animation: fadeInMsg 0.5s ease-out forwards;
+}
+
+.meta-hud-box {
+    background: linear-gradient(180deg, rgba(20, 25, 35, 0.95) 0%, rgba(15, 20, 25, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 3px solid var(--accent-red); /* Topo vermelho Valorant */
+    padding: 1.5rem;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Header Flexível */
+.meta-hud-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.meta-hud-title {
+    font-family: 'Oswald', sans-serif;
+    color: var(--text-main);
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.icon-stat { color: var(--accent-green); filter: drop-shadow(0 0 5px var(--accent-green)); }
+
+.meta-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 5px;
+    letter-spacing: 1px;
+}
+
+/* --- NOVOS CONTROLES (Toolbar) --- */
+.meta-controls-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 5px 15px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+    gap: 15px;
+}
+
+/* Select customizado */
+.meta-sort-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.control-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.meta-select-modern {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none;
+}
+.meta-select-modern option {
+    background: #1f2731;
+    color: white;
+}
+
+/* Separador vertical */
+.meta-separator {
+    width: 1px;
+    height: 20px;
+    background: rgba(255,255,255,0.1);
+}
+
+/* Grupo de Filtros (Abas) */
+.meta-filter-group-modern {
+    display: flex;
+    gap: 2px; /* Botões colados */
+}
+
+.meta-filter-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.meta-filter-btn img {
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s ease;
+    
+    /* O TRUQUE MÁGICO:
+       1. brightness(0): Remove qualquer cor original, deixando preto maciço.
+       2. invert(1): Inverte o preto para BRANCO PURO.
+    */
+    filter: brightness(0) invert(1);
+    
+    /* Deixa meio transparente (cinza visual) quando não selecionado */
+    opacity: 0.5;
+}
+
+.meta-filter-btn:hover img { 
+    opacity: 1; 
+    /* O hover mantém o invert herdado ou reforça */
+    filter: invert(1);
+}
+
+.meta-filter-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: white;
+}
+
+.meta-filter-btn:hover img,
+.meta-filter-btn.active img {
+    opacity: 1; /* Fica totalmente visível */
+    transform: scale(1.1); /* Leve zoom */
+    
+    /* Mantém branco e adiciona uma sombra (glow) vermelha */
+    filter: brightness(0) invert(1) drop-shadow(0 0 3px var(--accent-red));
+}
+
+/* Estado Ativo (Vermelho Valorant) */
+/* Estado Ativo (Vermelho Valorant) */
+.meta-filter-btn.active {
+    background: rgba(255, 70, 85, 0.1);
+    border: 1px solid var(--accent-red);
+    color: var(--accent-red);
+    box-shadow: 0 0 10px rgba(255, 70, 85, 0.1);
+}
+
+.meta-filter-btn.active img {
+    opacity: 1;
+    /* CORREÇÃO: Adicionado brightness(0) antes do invert */
+    /* Isso garante: Fica preto -> Inverte para Branco -> Adiciona brilho vermelho */
+    filter: brightness(0) invert(1) drop-shadow(0 0 4px var(--accent-red));
+    
+    transform: scale(1.15); /* Um pouco mais de zoom para destaque */
+}
+
+/* --- CARROSSEL E SETAS --- */
+.carousel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Esconde a scrollbar nativa mas mantém funcionalidade */
+.meta-scroll-container {
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    width: 100%;
+    margin: 0 10px; /* Espaço para não colar nas setas */
+}
+.meta-scroll-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.meta-scroll-track {
+    display: flex;
+    gap: 1rem;
+    padding: 5px 2px;
+    width: max-content;
+}
+
+/* Botões de Seta (Esquerda/Direita) */
+.nav-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-muted);
+    width: 40px;
+    height: 60px; /* Botão alto para facilitar clique */
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 2;
+    flex-shrink: 0;
+}
+
+.nav-btn:hover {
+    background: var(--accent-red);
+    border-color: var(--accent-red);
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 70, 85, 0.4);
+}
+
+/* Mini Cards (Ajuste visual) */
+.meta-mini-card {
+    min-width: 170px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-left: 3px solid transparent; /* Cor definida via JS */
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.2s ease;
+}
+.meta-mini-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255,255,255,0.08);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .meta-hud-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .meta-controls-wrapper {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    .meta-filter-group-modern {
+        margin-top: 5px;
+    }
+    .nav-btn {
+        width: 30px;
+        height: 50px;
+    }
+}
+
+/* --- META ANALYTICS & SCROLL HUD --- */
+.meta-analytics-section {
+    max-width: 1200px;
+    margin: 2rem auto 0 auto;
+    padding: 0 1rem;
+    display: none; /* O JS vai mostrar */
+    animation: fadeInMsg 0.5s ease-out forwards;
+}
+
+.meta-hud-box {
+    background: linear-gradient(90deg, rgba(20, 30, 40, 0.9) 0%, rgba(15, 25, 35, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 2px solid var(--text-muted);
+    padding: 1.5rem;
+    position: relative;
+    /* Corte técnico no canto */
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+
+.meta-hud-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Alinha botões com o texto */
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 1rem;
+}
+
+.header-left { display: flex; flex-direction: column; }
+
+.meta-hud-title {
+    font-family: 'Oswald', sans-serif;
+    color: var(--text-main);
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.meta-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: 2rem; /* Alinha com o texto do título */
+}
+
+/* --- CONTROLES (SORT & FILTER) --- */
+.meta-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* Select de Ordenação */
+.meta-sort-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+.meta-select {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 4px 8px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    text-transform: uppercase;
+}
+
+/* Botões de Filtro (Ícones) */
+.meta-filter-group {
+    display: flex;
+    gap: 5px;
+}
+
+/* --- SCROLL HORIZONTAL (A Mágica) --- */
+.meta-scroll-container {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 10px; /* Espaço para scrollbar */
+    cursor: grab;
+    
+    /* Suavidade no scroll */
+    scroll-behavior: smooth;
+    
+    /* Esconder scrollbar padrão no Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-red) rgba(0,0,0,0.3);
+}
+
+.meta-scroll-container:active { cursor: grabbing; }
+
+.meta-scroll-track {
+    display: flex;
+    gap: 1rem;
+    width: max-content; /* Permite crescer horizontalmente */
+    padding: 0 5px;
+}
+
+/* Mini Cards (Ajustados para Layout Horizontal) */
+.meta-mini-card {
+    min-width: 160px; /* Tamanho fixo para ficarem uniformes */
+    background: rgba(255, 255, 255, 0.03);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid transparent;
+    border-left: 3px solid var(--border-color); /* Indicador de cor */
+    transition: all 0.2s ease;
+    user-select: none; /* Evita selecionar texto ao arrastar */
+}
+
+.meta-mini-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-3px);
+}
+
+.meta-mini-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 4px;
+    object-fit: cover;
+    background: #000;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.meta-mini-info { display: flex; flex-direction: column; }
+
+.meta-mini-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #fff;
+}
+
+.meta-mini-class {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.meta-mini-rate {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* Cores de Win Rate */
+.rate-high { color: var(--accent-green); border-left-color: var(--accent-green) !important; }
+.rate-mid { color: var(--accent-yellow); border-left-color: var(--accent-yellow) !important; }
+.rate-low { color: var(--accent-red); border-left-color: var(--accent-red) !important; }
+
+/* Scrollbar Customizada (Webkit) */
+.meta-scroll-container::-webkit-scrollbar { height: 6px; }
+.meta-scroll-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+.meta-scroll-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+.meta-scroll-container::-webkit-scrollbar-thumb:hover { background: var(--accent-red); }
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+    .meta-hud-header { flex-direction: column; align-items: flex-start; }
+    .meta-controls { width: 100%; justify-content: space-between; }
+}
+
+/* --- CORREÇÃO: Esconder Scrollbar Horizontal do HUD --- */
+
+/* Para Chrome, Safari e Edge */
+.meta-scroll-container::-webkit-scrollbar {
+    display: none !important;
+    height: 0 !important;
+    width: 0 !important;
+    background: transparent !important; 
+}
+
+/* Para Firefox e IE */
+.meta-scroll-container {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+/* --- NOVA ESTRUTURA DO HEADER DO CARD --- */
+
+/* O Container que segura Nome (Esquerda) e WinRate (Direita) */
+.agent-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Alinha verticalmente ao centro */
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+/* Coluna da Esquerda (Classe e Nome) */
+.agent-info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Espaço entre classe e nome */
+}
+
+/* 1. A Classe (Agora fica em cima do nome, bem sutil) */
+.agent-class-badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Pequeno quadrado decorativo ao lado da classe */
+.agent-class-badge::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent-red);
+}
+
+/* 2. O Nome do Agente */
+.agent-name-styled {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2rem; /* Bem grande */
+    line-height: 1;
+    color: var(--text-main);
+    text-transform: uppercase;
+    margin: 0;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+}
+
+/* Coluna da Direita (Win Rate) */
+.agent-wr-col {
+    text-align: right;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.wr-label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.wr-value {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.4rem;
+    line-height: 1;
+    font-weight: 700;
+}
+
+/* Cores do Win Rate */
+.rate-high { color: var(--accent-green); text-shadow: 0 0 10px rgba(23, 229, 136, 0.3); }
+.rate-mid { color: var(--accent-yellow); }
+.rate-low { color: var(--accent-red); }
+
+/* =========================================
+   MODAL STATS (HUD CLEAN VERSION)
+   ========================================= */
+
+.modal-live-stats {
+    /* Removemos margens antigas */
+    margin: 0;
+    
+    /* Layout Interno */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinha tudo à direita para encostar na borda */
+    justify-content: center;
+    
+    /* Visual "Flutuante" Clean */
+    padding-left: 2rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.15); /* Linha fina separadora */
+    
+    /* Animação */
+    animation: fadeInRight 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* O Label "WIN RATE" */
+.stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    font-weight: 600;
+    text-align: right;
+}
+
+/* O Número Gigante */
+.stat-number {
+    font-family: 'Oswald', sans-serif;
+    font-size: 3.5rem; /* BEM MAIOR AGORA */
+    line-height: 0.9;
+    font-weight: 700;
+    color: white; /* Cor base branca, o JS pode mudar se quiser */
+    text-shadow: 0 0 20px rgba(0,0,0,0.5);
+    
+    /* Gradiente sutil no texto para parecer metálico/tech */
+    background: linear-gradient(180deg, #fff 0%, #ccc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Indicador "LIVE DATA" */
+.stat-decoration {
+    margin-top: 5px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    color: var(--accent-green); /* Verde tech */
+    background: rgba(23, 229, 136, 0.1);
+    padding: 2px 6px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(23, 229, 136, 0.2);
+}
+
+.icon-pulse {
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent-green);
+    border-radius: 50%;
+    animation: blinkGreen 2s infinite;
+}
+
+@keyframes blinkGreen {
+    0%, 100% { opacity: 1; box-shadow: 0 0 5px var(--accent-green); }
+    50% { opacity: 0.3; box-shadow: none; }
+}
+
+/* AJUSTE MOBILE */
+@media (max-width: 768px) {
+    .header-info {
+        flex-direction: column; /* Volta a empilhar no celular */
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    
+    .modal-live-stats {
+        width: 100%;
+        align-items: flex-start; /* Alinha a esquerda no mobile */
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 1rem;
+        flex-direction: row; /* Coloca label e numero lado a lado no mobile */
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .stat-number { font-size: 2.5rem; }
 }

@@ -150,6 +150,255 @@ document.addEventListener('DOMContentLoaded', () => {
         'default':   { glow: 'rgba(255, 255, 255, 0.1)', p1: '#ffffff', p2: '#888888', p3: '#333333' }
     };
 
+    // 1. Dados dos Agentes (Simulação de API)
+    // Você pode editar esses números manualmente conforme os patches mudam
+    const agentStatsData = {
+        'iso': 52.4,
+        'clove': 51.8,
+        'raze': 51.2,
+        'cypher': 50.9,
+        'jett': 50.5,
+        'reyna': 50.1,
+        'phoenix': 49.8,
+        'sova': 49.5,
+        'killjoy': 49.2,
+        'brimstone': 48.9,
+        'omen': 48.7,
+        'gekko': 48.5,
+        'sage': 48.2,
+        'neon': 47.9,
+        'fade': 47.8,
+        'breach': 47.5,
+        'skye': 47.2,
+        'viper': 46.8,
+        'astra': 46.5,
+        'yoru': 46.2,
+        'kayo': 45.8,
+        'chamber': 45.5,
+        'deadlock': 45.2,
+        'harbor': 44.9,
+        'vyse': 48.0,
+        'tejo': 49.0,
+        'veto': 47.0
+    };
+
+    // Função Auxiliar para definir cor baseada na %
+    function getRateClass(rate) {
+        if (rate >= 50.5) return 'rate-high'; // Verde
+        if (rate >= 48.0) return 'rate-mid';  // Amarelo
+        return 'rate-low';                    // Vermelho
+    }
+
+    // 2. Injetar Win Rate Individual nos Cards
+    // 2. Injetar Win Rate e Reestruturar o Header
+    function renderIndividualWinRates() {
+        cards.forEach(card => {
+            const agentNameKey = card.getAttribute('data-name').toLowerCase();
+            const winRate = agentStatsData[agentNameKey] || 'N/A';
+            
+            // Elementos atuais (que vamos substituir/reorganizar)
+            // Pegamos o elemento H3 original
+            const originalNameEl = card.querySelector('.agent-name'); 
+            
+            if (!originalNameEl) return;
+
+            // Extraimos apenas o TEXTO do nome (ignorando o span da classe antiga)
+            // childNodes[0] geralmente é o texto "Phoenix " antes do span
+            let rawName = originalNameEl.childNodes[0].textContent.trim();
+            
+            // Pegamos a classe do atributo do card para garantir (mais seguro que pegar do span)
+            const roleName = card.getAttribute('data-class'); 
+            
+            // Definimos a cor
+            let colorClass = '';
+            if (typeof winRate === 'number') {
+                colorClass = getRateClass(winRate);
+            }
+
+            // CRIAMOS O NOVO HTML ESTRUTURADO
+            // Note que mantivemos a classe 'agent-name' no h3 para sua busca continuar funcionando
+            const newHeaderHTML = `
+                <div class="agent-header-wrapper">
+                    <div class="agent-info-col">
+                        <span class="agent-class-badge">${roleName}</span>
+                        <h3 class="agent-name agent-name-styled">${rawName}</h3>
+                    </div>
+                    
+                    <div class="agent-wr-col">
+                        <span class="wr-label">WIN RATE</span>
+                        <span class="wr-value ${colorClass}">${winRate}%</span>
+                    </div>
+                </div>
+            `;
+
+            // Substituimos o H3 antigo pelo nosso novo bloco completo
+            // O outerHTML troca o próprio elemento selecionado pelo novo
+            // Mas precisamos inserir isso no lugar certo.
+            
+            // A melhor forma é substituir o H3 antigo.
+            // Mas cuidado: o seu CSS antigo de '.agent-name' pode ter estilos conflitantes.
+            // Por isso adicionei a classe 'agent-name-styled' no CSS acima para resetar estilos.
+            
+            // Vamos inserir o novo header ANTES dos grupos de habilidade
+            const cardBody = card.querySelector('.card-body');
+            
+            // Removemos o header antigo (o h3 bagunçado)
+            originalNameEl.remove();
+            
+            // Inserimos o novo header no topo do body
+            cardBody.insertAdjacentHTML('afterbegin', newHeaderHTML);
+        });
+    }
+
+    // 3. Renderizar o Painel "Top 5" Global
+    // --- ATUALIZADO: SISTEMA DE META ANALYTICS (HUD GLOBAL) ---
+    
+    // Variáveis de Estado
+    let currentMetaFilter = 'all';
+    let currentMetaSort = 'desc';
+    let globalAgentList = []; // Vai guardar a lista combinada de dados + classes
+
+    // Função para montar a lista de dados completa
+    function buildGlobalAgentData() {
+        globalAgentList = [];
+        
+        // 1. Percorre todos os cards do HTML para pegar Nome, Classe e Imagem
+        // Isso garante que temos os dados corretos que já existem na página
+        cards.forEach(card => {
+            const nameKey = card.getAttribute('data-name').toLowerCase(); // ex: 'iso'
+            const agentClass = card.getAttribute('data-class'); // ex: 'duelist'
+            const displayImg = card.querySelector('.agent-img-box img').src;
+            const displayName = card.querySelector('.agent-name').childNodes[0].textContent.trim();
+            
+            // 2. Pega a Win Rate do objeto de dados manual
+            const winRate = agentStatsData[nameKey] || 0;
+
+            if (agentStatsData[nameKey]) { // Só adiciona se tiver dados estatísticos
+                globalAgentList.push({
+                    key: nameKey,
+                    name: displayName,
+                    role: agentClass,
+                    img: displayImg,
+                    rate: winRate
+                });
+            }
+        });
+    }
+
+    function renderGlobalStats() {
+        const metaSection = document.getElementById('metaAnalytics');
+        const metaTrack = document.getElementById('metaTopGrid');
+        
+        if (!metaSection || !metaTrack) return;
+
+        // 1. Filtragem
+        let filtered = globalAgentList.filter(agent => {
+            if (currentMetaFilter === 'all') return true;
+            return agent.role === currentMetaFilter;
+        });
+
+        // 2. Ordenação
+        filtered.sort((a, b) => {
+            if (currentMetaSort === 'desc') return b.rate - a.rate; // Maior -> Menor
+            if (currentMetaSort === 'asc') return a.rate - b.rate;  // Menor -> Maior
+            if (currentMetaSort === 'az') return a.name.localeCompare(b.name); // A-Z
+            return 0;
+        });
+
+        // 3. Renderização HTML
+        metaTrack.innerHTML = ''; // Limpa
+
+        if (filtered.length === 0) {
+            metaTrack.innerHTML = '<div style="padding:10px; color:#666;">Nenhum agente encontrado neste filtro.</div>';
+            return;
+        }
+
+        filtered.forEach(agent => {
+            const colorClass = getRateClass(agent.rate);
+            
+            const html = `
+                <div class="meta-mini-card ${colorClass}" title="${agent.name} - ${agent.rate}%">
+                    <img src="${agent.img}" class="meta-mini-img" alt="${agent.name}">
+                    <div class="meta-mini-info">
+                        <span class="meta-mini-class">${agent.role}</span>
+                        <span class="meta-mini-name">${agent.name}</span>
+                        <span class="meta-mini-rate ${colorClass}">${agent.rate}%</span>
+                    </div>
+                </div>
+            `;
+            metaTrack.innerHTML += html;
+        });
+
+        // Mostra a seção
+        metaSection.style.display = 'block';
+    }
+
+
+    // --- NOVO CÓDIGO: Event Listeners do HUD Global ---
+
+    // 1. Selecionar os elementos
+    const metaFilterBtns = document.querySelectorAll('.meta-filter-btn');
+    const metaSortSelect = document.getElementById('metaSortSelect');
+
+    // 2. Lógica de Clique nos Filtros (Classes)
+    metaFilterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove a classe 'active' de todos e adiciona no clicado
+            metaFilterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Atualiza a variável de filtro e redesenha
+            currentMetaFilter = btn.getAttribute('data-meta-filter');
+            renderGlobalStats();
+        });
+    });
+
+    // 3. Lógica de Mudança na Ordenação (Select)
+    if (metaSortSelect) {
+        metaSortSelect.addEventListener('change', (e) => {
+            currentMetaSort = e.target.value;
+            renderGlobalStats();
+        });
+    }
+    // --- Event Listeners do HUD ---
+
+    // 1. Botões de Filtro
+    // --- LÓGICA DAS SETAS DO CARROSSEL ---
+    const scrollContainer = document.getElementById('metaScrollContainer');
+    const btnLeft = document.getElementById('scrollLeftBtn');
+    const btnRight = document.getElementById('scrollRightBtn');
+
+    if (scrollContainer && btnLeft && btnRight) {
+        
+        // Quantidade de pixels para rolar a cada clique
+        // (Aproximadamente o tamanho de 2 cards + gap)
+        const SCROLL_AMOUNT = 360; 
+
+        btnLeft.addEventListener('click', () => {
+            scrollContainer.scrollBy({
+                left: -SCROLL_AMOUNT,
+                behavior: 'smooth'
+            });
+        });
+
+        btnRight.addEventListener('click', () => {
+            scrollContainer.scrollBy({
+                left: SCROLL_AMOUNT,
+                behavior: 'smooth'
+            });
+        });
+    }
+    
+    // ATUALIZAÇÃO: Certifique-se de chamar a renderização inicial
+    renderGlobalStats();
+
+    // --- INICIALIZAÇÃO ---
+    // Precisamos rodar isso APÓS o DOM estar carregado (já estamos dentro do DOMContentLoaded)
+    buildGlobalAgentData();
+    renderIndividualWinRates(); // Função antiga que coloca WR nos cards grandes
+    renderGlobalStats(); // Renderiza o novo HUD
+
+    // --- 3. Lógica de Filtragem e Busca ---
     // --- 3. Lógica de Filtragem e Busca ---
     function filterCards(category, searchText) {
         searchText = searchText.toLowerCase();
@@ -199,11 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        if (searchText.length > 0) {
-            universalBox.style.display = 'none';
-        } else {
-            universalBox.style.display = 'block'; 
-        }
+        // O BLOCO QUE ESCONDIA A UNIVERSAL BOX FOI REMOVIDO DAQUI
     }
 
     // Event Listeners dos Filtros
@@ -233,42 +478,74 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializa filtros
     filterCards('all', ''); 
 
-    // --- 4. Lógica do MODAL ---
+    // --- 4. Lógica do MODAL (Atualizada) ---
     function openAgentModal(card) {
-        const name = card.getAttribute('data-name');
-        
-        const displayTitle = card.querySelector('.agent-name').childNodes[0].textContent.trim();
+        const nameKey = card.getAttribute('data-name').toLowerCase(); // Chave para pegar os dados
+        const displayTitle = card.querySelector('.agent-name-styled') ? card.querySelector('.agent-name-styled').textContent : card.querySelector('.agent-name').childNodes[0].textContent.trim();
         const imgSrc = card.querySelector('.agent-img-box img').src;
         
+        // Elementos básicos
         modalTitle.innerText = displayTitle;
         modalImg.src = imgSrc;
         modalClass.innerText = card.getAttribute('data-class'); 
 
+        // --- NOVA LÓGICA DE WIN RATE NO MODAL ---
+        const statsBox = document.getElementById('modalStatsBox');
+        const winRate = agentStatsData[nameKey] || 'N/A';
+        
+        if (typeof winRate === 'number') {
+            const rateClass = getRateClass(winRate); // Usa sua função existente para cor (Verde/Amarelo/Vermelho)
+            
+            // Calculo da largura da barra decorativa (Ex: 50% = metade da barra)
+            // Normalizamos para visual: (Rate - 40) * 5 para exagerar as diferenças visuais na barra
+            const barWidth = Math.max(0, Math.min(100, (winRate - 40) * 5)); 
+
+            statsBox.innerHTML = `
+                <div class="stat-block">
+                    <div class="stat-label">
+                        <span class="text-pt">TAXA DE VITÓRIA</span>
+                        <span class="text-en">WIN RATE</span>
+                    </div>
+                    <div class="stat-value-row">
+                        <span class="stat-number ${rateClass}">${winRate}%</span>
+                        <div class="stat-visual-bar-track">
+                            <div class="stat-visual-bar-fill ${rateClass}" style="width: ${barWidth}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-decoration">
+                    <span class="icon-pulse">●</span> LIVE DATA
+                </div>
+            `;
+            statsBox.style.display = 'flex';
+        } else {
+            statsBox.style.display = 'none'; // Esconde se não tiver dados
+        }
+        // ----------------------------------------
+
+        // Lógica de Contexto/Reason (Mantida igual)
         const reasonDiv = card.querySelector('.agent-reason');
         if (reasonDiv && reasonDiv.innerText.trim().length > 0) {
-            modalReasonText.innerHTML = reasonDiv.innerHTML; // Usar innerHTML para manter as tags de span de idioma
+            modalReasonText.innerHTML = reasonDiv.innerHTML;
             modalContextBox.style.display = 'block';
         } else {
             modalContextBox.style.display = 'none';
         }
 
+        // Lógica de Habilidades (Mantida igual)
         modalAbilitiesGrid.innerHTML = ''; 
-
         const abilityGroups = card.querySelectorAll('.ability-group');
 
         if(abilityGroups.length > 0) {
             abilityGroups.forEach(group => {
                 const abilityCard = document.createElement('div');
                 abilityCard.className = 'modal-ability-card';
-
                 const titleEl = group.querySelector('.ability-name');
                 const titleText = titleEl ? titleEl.innerText : 'Habilidade';
-                
                 const listEl = group.querySelector('ul');
                 const noteEl = group.querySelector('.ability-note');
 
                 let cardHTML = `<div class="modal-ability-title">${titleText}</div>`;
-                
                 if (listEl) cardHTML += listEl.outerHTML; 
                 if (noteEl) cardHTML += `<p class="modal-ability-note">${noteEl.innerHTML}</p>`;
 
@@ -279,8 +556,9 @@ document.addEventListener('DOMContentLoaded', () => {
             modalAbilitiesGrid.innerHTML = '<p style="color: var(--text-muted)">Nenhuma alteração específica listada.</p>';
         }
 
+        // Estilos dinâmicos de cor
         modalContent.className = 'modal-content theme-dynamic';
-        const colors = agentColors[name.toLowerCase()] || agentColors['default'];
+        const colors = agentColors[nameKey] || agentColors['default'];
 
         modalContent.style.setProperty('--theme-glow', colors.glow);
         modalContent.style.setProperty('--theme-p1', colors.p1);
@@ -354,6 +632,8 @@ document.addEventListener('DOMContentLoaded', () => {
             scrollTopBtn.classList.add('hidden');
         }
     });
+
+    
 
     // --- 7. Lógica do Chat (COM FIREBASE) ---
     const randomAgents = ["Brimstone", "Viper", "Omen", "Killjoy", "Cypher", "Sova", "Sage", "Phoenix", "Jett", "Reyna", "Raze", "Breach", "Skye", "Yoru", "Astra", "KAY/O", "Chamber", "Neon", "Fade", "Harbor", "Gekko", "Deadlock", "Iso", "Clove", "Vyse", "Tejo", "Waylay", "Veto"];
