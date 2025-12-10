@@ -50,7 +50,7 @@
 
     <div class="controls">
     <form id="searchForm" class="search-form-container">
-        <input type="search" id="searchInput" required placeholder="Buscar agente...">
+        <input type="search" id="searchInput" required placeholder="Buscar agente..." maxlength="10">
     </form>
     
     <button class="filter-btn active" data-filter="all">
@@ -857,7 +857,7 @@
                         
                         <span class="divider">|</span>
 
-                        <textarea id="commsInput" class="input-field msg-field" placeholder="Digite sua mensagem..." required rows="1"></textarea>
+                        <textarea id="commsInput" class="input-field msg-field" placeholder="Digite sua mensagem..." required rows="1" maxlength="165"></textarea>
                     </div>
                     <button type="submit" class="btn-send">ENVIAR</button>
                 </form>
