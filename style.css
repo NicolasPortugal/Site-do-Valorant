@@ -1649,3 +1649,19 @@ textarea.msg-field::-webkit-scrollbar-thumb {
 .comms-feed::-webkit-scrollbar-thumb:hover {
     background-color: #fff; /* Branco ao focar */
 }
+
+.lang-switch-container {
+    position: absolute;
+    top: 25px;    /* Distância do topo */
+    right: 30px;  /* Distância da direita */
+    z-index: 100; /* Garante que fique acima das decorações de fundo */
+}
+
+/* Ajuste para Celulares (Mobile) */
+@media (max-width: 600px) {
+    .lang-switch-container {
+        top: 15px;
+        right: 15px;
+        transform: scale(0.9); /* Deixa levemente menor para economizar espaço */
+    }
+}
