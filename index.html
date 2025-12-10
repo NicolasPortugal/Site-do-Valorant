@@ -926,25 +926,49 @@
             <span class="close-modal">&times;</span>
             
             <div class="modal-visual-effect"></div>
-
-            <div class="modal-header">
-                <img id="modalImg" src="" alt="Agente">
-                <div>
-                    <h2 id="modalTitle">NOME DO AGENTE</h2>
-                    <span id="modalClass" style="color: var(--text-muted); text-transform: uppercase; font-size: 0.9rem;">Classe</span>
-                </div>
-            </div>
             
-            <div class="modal-body">
-                <div id="modalContextBox" class="dev-context-box">
-                    <h3><span style="font-size:1.5em">📝</span> Análise & Contexto</h3>
-                    <p id="modalReasonText">Aqui vai o texto longo explicativo...</p>
-                </div>
+            <div class="modal-bg-decoration"></div>
 
-                <h3 style="font-family:'Oswald'; margin-bottom:1rem; color:var(--text-muted);">Alterações de Habilidades</h3>
-                
-                <div id="modalAbilitiesGrid" class="modal-abilities-grid">
+            <div class="modal-scroll-container">
+                <div class="modal-header">
+                    <div class="header-decoration-line"></div>
+                    <div class="agent-portrait">
+                        <img id="modalImg" src="" alt="Agente">
+                        <div class="img-overlay"></div>
                     </div>
+                    <div class="header-info">
+                        <span id="modalClass" class="modal-class-badge">Classe</span>
+                        <h2 id="modalTitle">NOME DO AGENTE</h2>
+                        <div class="header-meta">
+                            <span>// PROJECT_ID: VAL-2025</span>
+                            <span>// STATUS: UPDATED</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-body">
+                    <div id="modalContextBox" class="dev-context-box">
+                        <div class="context-decor-top"></div>
+                        <div class="context-label">
+                            <span class="icon">⚡</span> 
+                            <span>DEVELOPER INSIGHTS</span>
+                        </div>
+                        <h3><span style="font-size:1.2em">📝</span> Análise & Contexto</h3>
+                        <div class="context-text-wrapper">
+                            <p id="modalReasonText">Aqui vai o texto longo explicativo...</p>
+                        </div>
+                        <div class="context-decor-bottom"></div>
+                    </div>
+
+                    <div class="abilities-section-title">
+                        <span class="line"></span>
+                        <h3>Alterações de Habilidades</h3>
+                        <span class="line"></span>
+                    </div>
+                    
+                    <div id="modalAbilitiesGrid" class="modal-abilities-grid">
+                        </div>
+                </div>
             </div>
         </div>
     </div>

@@ -663,260 +663,370 @@ input[type="search"]::-webkit-search-cancel-button {
     -webkit-appearance: none;
 }
 
+/* =========================================
+   MODAL TÁTICO (REMASTERIZADO)
+   ========================================= */
+
+/* Fundo do Overlay */
 .modal-overlay {
-    position: fixed; /* Fixa na tela inteira */
+    position: fixed; /* OBRIGATÓRIO: Para flutuar sobre o site */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85); /* Fundo escuro */
-    display: none; /* IMPORTANTE: Começa escondido */
-    justify-content: center; /* Centraliza o conteúdo */
-    align-items: center;
+    background: rgba(15, 25, 35, 0.95);
+    backdrop-filter: blur(8px);
     z-index: 9999;
-    backdrop-filter: blur(5px); /* Efeito de desfoque no fundo */
+    
+    /* Oculto por padrão */
+    display: none;
+    align-items: center;
+    justify-content: center;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
-/* --- ADICIONE ESTA REGRA QUE ESTAVA FALTANDO --- */
+/* ESTADO ATIVO (Quando a classe .active é adicionada pelo JS) */
 .modal-overlay.active {
-    display: flex; /* Torna visível */
-    opacity: 1;
+    display: flex; /* Torna visível e ativa o Flexbox para centralizar */
+    opacity: 1;    /* Fade in */
 }
 
-/* 1. Aumentando o tamanho e permitindo scroll */
+/* O Container Principal do Modal */
 .modal-content {
-    background: var(--card-bg); /* Ou var(--bg-color) para mais contraste */
-    width: 95%; /* Ocupa quase toda a largura em mobile */
-    max-width: 1000px; /* Bem mais largo que os 600px anteriores */
-    height: 90vh; /* Ocupa 90% da altura da tela */
+    bbackground: #141b24;
+    width: 90%;
+    max-width: 1100px;
+    height: 85vh;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding: 0; /* Remove padding global para controlar melhor */
-    border: 1px solid var(--border-color);
-    box-shadow: 0 0 50px rgba(0,0,0,0.8);
-    overflow: hidden; /* O scroll será no body do modal */
-    position: relative;
-
+    
+    /* Animação de entrada */
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    
+    /* Corte angular */
+    clip-path: polygon(
+        20px 0, 100% 0, 
+        100% calc(100% - 20px), calc(100% - 20px) 100%, 
+        0 100%, 0 20px
+    );
 }
 
-/* Cabeçalho fixo no topo do modal */
-.modal-header {
-    padding: 2rem 2rem 1rem 2rem;
-    background: rgba(0,0,0,0.4);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-shrink: 0; /* Não encolhe */
+/* Quando o modal está ativo, ele cresce para o tamanho normal */
+.modal-overlay.active .modal-content {
+    transform: scale(1);
 }
 
-.modal-header img {
-    width: 80px;
-    height: 80px;
-    border-radius: 12px; /* Quadrado arredondado fica mais moderno */
-    border: 2px solid var(--text-main);
-    box-shadow: 0 0 15px var(--theme-glow, rgba(255,255,255,0.2));
+/* Decoração de fundo dentro do modal */
+.modal-bg-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+    pointer-events: none;
 }
 
-.modal-header h2 {
-    font-size: 2.5rem;
-    margin: 0;
-    text-transform: uppercase;
-    font-family: 'Oswald', sans-serif;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
-
-/* Corpo do modal com SCROLL */
-.modal-body {
-    padding: 2rem;
-    overflow-y: auto; /* Barra de rolagem aqui */
-    flex-grow: 1;
+/* Container de Scroll (para o header não sumir ao rolar, se quiser fixo, ou rolar tudo junto) */
+.modal-scroll-container {
+    overflow-y: auto;
+    height: 100%;
+    width: 100%;
     position: relative;
     z-index: 2;
-    
-    /* Melhoria de scrollbar (opcional) */
     scrollbar-width: thin;
-    scrollbar-color: var(--accent-red) var(--card-bg);
+    scrollbar-color: var(--theme-p1, var(--accent-red)) #0f1923;
 }
 
-/* Scrollbar estilizada para Webkit (Chrome/Edge) */
-.modal-body::-webkit-scrollbar {
-    width: 8px;
-}
-.modal-body::-webkit-scrollbar-track {
-    background: #111;
-}
-.modal-body::-webkit-scrollbar-thumb {
-    background: var(--text-muted);
-    border-radius: 4px;
-}
-
-/* 2. Estilo da Caixa de "Motivo Geral" (Contexto) */
-.dev-context-box {
-    background: rgba(15, 25, 35, 0.85); /* Fundo bem escuro para leitura */
-    border-left: 4px solid var(--accent-yellow);
-    padding: 1.5rem;
+/* --- CABEÇALHO DO MODAL --- */
+.modal-header {
+    display: flex;
+    align-items: flex-end; /* Alinha o texto com a base da imagem */
+    gap: 2rem;
+    padding: 3rem 3rem 0 3rem;
+    position: relative;
     margin-bottom: 2rem;
-    border-radius: 0 8px 8px 0;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
-.dev-context-box h3 {
-    color: var(--accent-yellow);
+/* Imagem do Agente (Estilo Retrato) */
+.agent-portrait {
+    width: 180px;
+    height: 180px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0,0,0,0.3);
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.agent-portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center; /* ADICIONE ISSO: Foca no topo (rosto) da imagem */
+    filter: contrast(1.1) saturate(1.1);
+}
+
+/* Informações do Header */
+.header-info {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px; /* Ajuste visual */
+    width: 100%;
+}
+
+.modal-class-badge {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--theme-p1, var(--text-muted)); /* Pega a cor do agente */
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 12px;
+    border-left: 2px solid var(--theme-p1, var(--text-muted));
+    width: fit-content;
+    margin-bottom: 0.5rem;
+}
+
+#modalTitle {
     font-family: 'Oswald', sans-serif;
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 4.5rem; /* Título Gigante */
+    line-height: 1;
+    text-transform: uppercase;
+    color: white;
+    text-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+    margin: 0;
+    letter-spacing: -1px;
+}
+
+.header-meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    color: #555;
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 1rem;
+    font-weight: 600;
+}
+
+/* Linha decorativa que atravessa o header */
+.header-decoration-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--theme-p1, var(--accent-red)) 20%, 
+        rgba(255,255,255,0.1) 100%
+    );
+}
+
+/* --- CORPO E CONTEXTO --- */
+.modal-body {
+    padding: 0 3rem 3rem 3rem;
+}
+
+/* A NOVA CAIXA DE ANÁLISE (O destaque do pedido) */
+.dev-context-box {
+    background: rgba(15, 20, 25, 0.7); /* Escuro e transparente */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 4px solid var(--theme-p1, var(--accent-yellow)); /* Cor do agente na borda */
+    padding: 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+    /* Textura de scanlines sutis */
+    background-image: linear-gradient(rgba(0,0,0,0.2) 1px, transparent 1px);
+    background-size: 100% 4px;
+}
+
+/* Label técnico no topo da caixa ("DEVELOPER INSIGHTS") */
+.context-label {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--card-bg); /* Mesma cor do fundo do modal para cobrir a borda */
+    padding: 0 10px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    color: var(--theme-p1, var(--accent-yellow));
+    border: 1px solid rgba(255,255,255,0.1);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 5px;
 }
 
-.dev-context-box p {
-    color: #ddd;
+/* Título dentro da caixa */
+.dev-context-box h3 {
+    font-family: 'Oswald', sans-serif;
+    color: #ece8e1;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Texto da análise */
+.context-text-wrapper p {
+    color: #bbb;
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
-    line-height: 1.7; /* Espaçamento maior entre linhas */
-    white-space: pre-wrap; /* Respeita as quebras de linha do texto original */
+    line-height: 1.7;
+    white-space: pre-wrap;
+    max-width: 900px;
 }
 
-/* 3. Grid de Habilidades */
-.modal-abilities-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsivo */
-    gap: 1.5rem;
+/* Elementos decorativos nos cantos da caixa */
+.context-decor-top {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 20px;
+    height: 20px;
+    border-top: 2px solid var(--theme-p1, white);
+    border-right: 2px solid var(--theme-p1, white);
+}
+.context-decor-bottom {
+    position: absolute;
+    bottom: -1px;
+    left: -1px;
+    width: 20px;
+    height: 20px;
+    border-bottom: 2px solid var(--theme-p1, white);
+    border-left: 2px solid var(--theme-p1, white);
 }
 
-/* Card Individual de Habilidade dentro do Modal */
+/* --- GRID DE HABILIDADES --- */
+.abilities-section-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    color: var(--text-muted);
+}
+.abilities-section-title .line {
+    flex-grow: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+}
+.abilities-section-title h3 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 1rem;
+}
+
+/* Card de Habilidade (Melhorado) */
 .modal-ability-card {
-    /* Fundo gradiente sutil para dar profundidade */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-    
-    /* Arredondamento da box */
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     padding: 1.5rem;
+    transition: all 0.3s ease;
     position: relative;
-    
-    /* Animação física suave (bezier) para o hover */
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    
-    /* Começa sem brilho, apenas sombra escura */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
+/* Efeito Hover no Card */
 .modal-ability-card:hover {
-    /* Sobe levemente e aumenta a escala de forma imperceptível */
-    transform: translateY(-5px) scale(1.01);
-    
-    /* Fundo fica levemente mais claro */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-    
-    /* A borda assume a cor primária do agente */
-    border-color: var(--theme-p1, rgba(255, 255, 255, 0.5));
-    
-    /* A MÁGICA: Luz temática atrás do card */
-    /* Usa a variável --theme-glow que seu JS já está injetando */
-    box-shadow: 0 20px 40px -10px var(--theme-glow, rgba(255, 255, 255, 0.1));
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--theme-p1, white);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
 }
 
-/* Pequeno detalhe decorativo: uma linha brilhante no topo ao passar o mouse */
+/* Barra lateral colorida no hover */
 .modal-ability-card::before {
     content: '';
     position: absolute;
+    left: 0;
     top: 0;
-    left: 20px;
-    right: 20px;
-    height: 1px;
+    height: 100%;
+    width: 3px;
     background: var(--theme-p1, white);
     opacity: 0;
-    transition: opacity 0.4s ease;
-    box-shadow: 0 0 10px var(--theme-p1, white);
+    transition: opacity 0.3s;
 }
-
 .modal-ability-card:hover::before {
-    opacity: 0.7;
+    opacity: 1;
 }
 
+/* Título da Habilidade */
 .modal-ability-title {
     font-family: 'Oswald', sans-serif;
-    font-size: 1.3rem;
-    color: var(--text-main);
+    font-size: 1.2rem;
+    color: white;
+    margin-bottom: 1rem;
     border-bottom: 1px solid rgba(255,255,255,0.1);
     padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
-/* Ajuste das listas dentro do modal para ficarem mais legíveis */
-.modal-ability-card ul {
-    margin: 0;
-    padding-left: 0.5rem;
-}
-
-.modal-ability-card li {
-    margin-bottom: 0.8rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    padding-left: 1.5rem; /* Espaço para o ícone */
-}
-
-/* Ajuste no botão de fechar */
 .close-modal {
-    position: absolute; /* Remove do fluxo e fixa na posição */
-    top: 20px;
-    right: 20px;
-    width: 45px;  /* Levemente maior para facilitar o clique */
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    
+    /* Tamanho fixo para garantir uma área de clique grande e fácil */
+    width: 45px; 
     height: 45px;
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* Centraliza o X perfeitamente */
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    z-index: 100; /* Garante que fique acima das partículas/animações */
-    transition: all 0.2s ease;
     
-    /* Garante que o texto (o X) fique bem no meio */
-    line-height: 0; 
-    padding-bottom: 4px; /* Pequeno ajuste visual vertical */
+    /* Estilo Tático Valorant */
+    background: rgba(255, 255, 255, 0.05); /* Fundo sutil para destacar do vídeo/imagem */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-muted);
+    
+    /* Tipografia e Cursor */
+    font-family: 'Oswald', sans-serif; /* Fonte mais técnica */
+    font-size: 1.8rem;
+    font-weight: 400;
+    line-height: 1; /* Remove espaçamento extra da fonte */
+    cursor: pointer;
+    z-index: 20; /* Garante que fique acima de tudo */
+    
+    /* Animação e Forma */
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    /* Um corte diagonal no canto superior esquerdo (estilo do jogo) */
+    clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%, 0% 20%);
 }
 .close-modal:hover {
     background: var(--accent-red);
     border-color: var(--accent-red);
     color: white;
-    transform: rotate(90deg); /* Uma rotação estilosa ao passar o mouse */
+    transform: rotate(90deg); /* Uma rotação satisfatória ao passar o mouse */
+    box-shadow: 0 0 15px rgba(255, 70, 85, 0.4); /* Glow */
 }
 
-@media (max-width: 768px) {
-    .modal-header h2 { font-size: 1.8rem; }
-    .modal-header img { width: 60px; height: 60px; }
-    .modal-abilities-grid { grid-template-columns: 1fr; }
+/* Responsividade Mobile */
+@media (max-width: 600px) {
+    .close-modal {
+        top: 15px;
+        right: 15px;
+        width: 40px; /* Um pouco menor, mas ainda fácil de clicar */
+        height: 40px;
+        font-size: 1.5rem;
+        background: rgba(0, 0, 0, 0.6); /* Fundo mais escuro para contraste no mobile */
+    }
 }
 
 /* Layout Interno */
-.modal-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    position: relative;
-    z-index: 2;
-}
 
-.modal-header img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--text-main);
-}
 
 .modal-body {
     position: relative;
