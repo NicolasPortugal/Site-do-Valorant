@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(scrollToChatBtn && commsSection) {
         scrollToChatBtn.addEventListener('click', () => {
             // Aumentei o offset para -250 (vai parar bem acima do título agora)
-            const yOffset = -170;
+            const yOffset = -152;
             
             const elementTop = commsSection.getBoundingClientRect().top;
             const yPosition = elementTop + window.scrollY + yOffset;
