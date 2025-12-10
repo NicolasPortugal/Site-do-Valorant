@@ -444,26 +444,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Lógica de Teclas para o Textarea (Enter envia, Shift+Enter pula linha) ---
+    // --- Lógica de Teclas para o Textarea ---
     if (commsInput) {
         const MAX_LINES = 5;
 
-        // 1. Bloqueia a criação de novas linhas se já tiver 5 (no pressionar de teclas)
         commsInput.addEventListener('keydown', (e) => {
-            // Conta quantas linhas existem atualmente
+            // Detecta se é mobile baseando-se na largura da tela (mesmo breakpoint do CSS)
+            const isMobile = window.innerWidth <= 600;
             const currentLines = commsInput.value.split('\n').length;
 
             if (e.key === 'Enter') {
+                
+                // 1. Lógica MOBILE: O Enter deve agir normalmente (pular linha)
+                if (isMobile) {
+                    // A única restrição no mobile é o limite de linhas
+                    if (currentLines >= MAX_LINES) {
+                        e.preventDefault(); // Impede a 6ª linha
+                        // Feedback visual de erro
+                        commsInput.style.borderColor = 'var(--accent-red)';
+                        setTimeout(() => commsInput.style.borderColor = '', 200);
+                    }
+                    // IMPORTANTE: Damos return aqui para que o código NÃO desça para a parte de enviar
+                    return; 
+                }
+
+                // 2. Lógica DESKTOP: Enter envia, Shift+Enter pula linha
                 // Se NÃO estiver segurando Shift ou Ctrl -> Tenta ENVIAR
                 if (!e.shiftKey && !e.ctrlKey) {
-                    e.preventDefault();
-                    commsForm.requestSubmit();
+                    e.preventDefault(); // Impede o pulo de linha padrão
+                    commsForm.requestSubmit(); // Envia o formulário
                 } 
                 // Se estiver segurando Shift (tentando pular linha) -> Verifica o limite
                 else {
                     if (currentLines >= MAX_LINES) {
-                        e.preventDefault(); // Impede a criação da 6ª linha
-                        
-                        // Opcional: Feedback visual (piscar borda vermelha)
+                        e.preventDefault();
                         commsInput.style.borderColor = 'var(--accent-red)';
                         setTimeout(() => commsInput.style.borderColor = '', 200);
                     }
@@ -471,15 +485,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // 2. Garante o limite ao colar texto (Paste)
+        // Mantém a proteção contra colar texto gigante
         commsInput.addEventListener('input', (e) => {
             const lines = commsInput.value.split('\n');
-            
             if (lines.length > MAX_LINES) {
-                // Se tiver mais que 5 linhas, corta o excesso e junta de volta
                 commsInput.value = lines.slice(0, MAX_LINES).join('\n');
-                
-                // Feedback visual
                 commsInput.style.borderColor = 'var(--accent-red)';
                 setTimeout(() => commsInput.style.borderColor = '', 200);
             }
