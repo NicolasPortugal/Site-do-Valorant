@@ -1046,6 +1046,9 @@ input[type="search"]::-webkit-search-cancel-button {
     animation: fadeInMsg 0.3s ease-out;
     word-break: break-word; 
     width: 100%; /* Garante que a mensagem ocupe a largura disponível */
+    display: flex;       /* Ativa flexbox */
+    flex-wrap: wrap;     /* Permite quebra de linha */
+    align-items: baseline; /* Alinha o texto na linha de leitura */
 }
 
 @keyframes fadeInMsg {
@@ -1060,6 +1063,9 @@ input[type="search"]::-webkit-search-cancel-button {
     text-transform: uppercase;
     font-family: 'Oswald', sans-serif;
     letter-spacing: 0.5px;
+
+    display: inline-block; /* Garante que o elemento aceite alinhamento vertical */
+    vertical-align: top;   /* Alinha com o topo do texto vizinho */
 }
 
 .chat-message.system {
@@ -1084,6 +1090,7 @@ input[type="search"]::-webkit-search-cancel-button {
        se você quiser que ela comece sempre abaixo do nome ou alinhada */
     display: inline-block; 
     max-width: 100%; /* Garante que não estoure a largura do pai */ 
+    vertical-align: top;
 }
 
 .chat-timestamp {
