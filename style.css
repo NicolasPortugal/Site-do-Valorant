@@ -1498,3 +1498,79 @@ textarea.msg-field::-webkit-scrollbar-thumb {
     background: var(--accent-red);
     border-radius: 2px;
 }
+
+/* =========================================
+   SCROLLBAR TÁTICA (VALORANT STYLE)
+   ========================================= */
+
+/* --- 1. Configuração Global (Chrome, Edge, Safari) --- */
+::-webkit-scrollbar {
+    width: 12px; /* Largura um pouco maior para parecer um trilho */
+    background-color: var(--bg-color); /* Fundo camuflado com o site */
+}
+
+/* O "Trilho" (Track) */
+::-webkit-scrollbar-track {
+    background: #0f1923; /* Cor bem escura */
+    border-left: 1px solid rgba(255, 255, 255, 0.05); /* Linha sutil separadora */
+}
+
+/* A "Peça" que desliza (Thumb) - Estado Normal */
+::-webkit-scrollbar-thumb {
+    background-color: #353e4a; /* Cinza tático (igual suas bordas) */
+    border: 2px solid #0f1923; /* Cria um espaço entre a barra e o fundo (efeito flutuante) */
+    border-radius: 0px; /* QUADRADO: Valorant não usa muitas curvas */
+}
+
+/* A "Peça" ao passar o mouse (Hover) - O Efeito "Cool" */
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-red); /* Fica VERMELHO NEON */
+    border-color: #0f1923;
+    /* Adiciona um brilho sutil vermelho */
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5); 
+}
+
+/* A "Peça" quando clicada (Active) */
+::-webkit-scrollbar-thumb:active {
+    background-color: #ff2b3c; /* Um vermelho ainda mais intenso */
+}
+
+/* --- 2. Suporte para Firefox (Limitado, mas estilizado) --- */
+* {
+    scrollbar-width: thin; /* Barra fina */
+    scrollbar-color: var(--accent-red) var(--bg-color); /* Vermelho no thumb, escuro no track */
+}
+
+/* =========================================
+   AJUSTES ESPECÍFICOS (MODAL E CHAT)
+   ========================================= */
+
+/* Scroll do Modal (Para não brigar com a borda do modal) */
+.modal-body::-webkit-scrollbar {
+    width: 8px; /* Mais fino dentro do modal */
+    background: rgba(0,0,0,0.3);
+}
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: var(--text-muted); /* Mais discreto (cinza) */
+    border: 2px solid transparent;
+    background-clip: content-box; /* Truque para deixar "solto" */
+    border-radius: 0;
+}
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-red); /* Vermelho só no hover */
+}
+
+/* Scroll do Chat (Feed de Comentários) */
+.comms-feed::-webkit-scrollbar {
+    width: 6px; /* Bem fino para não atrapalhar a leitura */
+}
+.comms-feed::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.2);
+}
+.comms-feed::-webkit-scrollbar-thumb {
+    background-color: var(--accent-green); /* Verde Viper/Buff para diferenciar o chat */
+    border-radius: 0;
+}
+.comms-feed::-webkit-scrollbar-thumb:hover {
+    background-color: #fff; /* Branco ao focar */
+}
