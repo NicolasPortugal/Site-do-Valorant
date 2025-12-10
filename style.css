@@ -1044,6 +1044,8 @@ input[type="search"]::-webkit-search-cancel-button {
     background: rgba(255, 255, 255, 0.03);
     border-left: 3px solid var(--text-muted);
     animation: fadeInMsg 0.3s ease-out;
+    word-break: break-word; 
+    width: 100%; /* Garante que a mensagem ocupe a largura disponível */
 }
 
 @keyframes fadeInMsg {
@@ -1066,7 +1068,24 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 .chat-message.system .chat-sender { color: var(--accent-red); }
 
-.chat-text { color: var(--text-main); }
+.chat-text {
+    color: var(--text-main);
+    
+    /* --- Correções --- */
+    
+    /* 1. Faz o 'Enter' funcionar visualmente */
+    white-space: pre-wrap; 
+    
+    /* 2. Quebra palavras gigantes para não vazar da caixa */
+    word-wrap: break-word;       /* Compatibilidade antiga */
+    overflow-wrap: break-word;   /* Padrão moderno */
+    
+    /* Opcional: Garante que a mensagem tenha seu próprio bloco visual 
+       se você quiser que ela comece sempre abaixo do nome ou alinhada */
+    display: inline-block; 
+    max-width: 100%; /* Garante que não estoure a largura do pai */ 
+}
+
 .chat-timestamp {
     font-size: 0.75rem;
     color: var(--text-muted);
