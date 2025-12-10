@@ -353,7 +353,27 @@ document.addEventListener('DOMContentLoaded', () => {
         '#ffae00', // Raze Orange
         '#40e0d0', // Sage Teal
         '#a4f0f5', // Jett Cyan
-        '#ffffff'  // White
+        '#ffffff',  // White
+        '#1a1a1a', // Preto suave
+        '#0a0f24', // Azul profundo futurista
+        '#ff6f91', // Rosa neon suave
+        '#7cffcb', // Verde neon limpo
+        '#8b5cf6', // Roxo vibrante (tipo Discord)
+        '#ff934f', // Laranja quente moderno
+        '#4dff91', // Verde água neon
+        '#00c6ff', // Azul neon
+        '#b0f566', // Verde pastel vibrante
+        '#ffd6e0', // Rosa pastel
+        '#c7f9cc', // Verde relaxante
+        '#f8f991', // Amarelo suave
+        '#ff9de2', // Rosa elétrico
+        '#5ce1e6', // Ciano gamer
+        '#647dff', // Azul arroxeado
+        '#ff3131', // Vermelho neon
+        '#ffe66d', // Amarelo quente
+        '#9bf6ff', // Azul pastel brilhante
+        '#ffadad', // Rosa coral
+        '#d0bdf4' // Lilás elegante
     ];
 
     // Função para renderizar mensagem na tela
