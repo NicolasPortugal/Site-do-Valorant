@@ -384,6 +384,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+
+    // --- Lógica de Teclas para o Textarea (Enter envia, Shift+Enter pula linha) ---
+    if (commsInput) {
+        commsInput.addEventListener('keydown', (e) => {
+            // Se apertar ENTER
+            if (e.key === 'Enter') {
+                // Se estiver segurando SHIFT ou CTRL, deixa o comportamento padrão (pular linha)
+                if (e.shiftKey || e.ctrlKey) {
+                    return; 
+                } 
+                // Caso contrário (apenas ENTER), previne a quebra de linha e envia
+                else {
+                    e.preventDefault();
+                    // Dispara o evento de submit do formulário manualmente
+                    commsForm.requestSubmit();
+                }
+            }
+        });
+    }
+
     // --- ENVIAR MENSAGEM ---
     commsForm.addEventListener('submit', async (e) => {
         e.preventDefault();

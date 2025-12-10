@@ -1447,3 +1447,28 @@ body.lang-en .valorant-toggle .label-en {
     color: #fff;
     text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
+
+/* Atualização para o Textarea de Mensagem */
+textarea.msg-field {
+    resize: none; /* Remove o puxador de redimensionamento do canto */
+    height: auto; /* Altura automática baseada no padding/rows */
+    min-height: 52px; /* Garante a mesma altura visual do input anterior */
+    max-height: 52px; /* Mantém o tamanho fixo conforme solicitado */
+    overflow-y: auto; /* Cria barra de rolagem interna se o texto for muito longo */
+    white-space: pre-wrap; /* Garante a quebra de linha visual */
+    line-height: 1.4; /* Melhora leitura de múltiplas linhas */
+    padding-top: 14px; /* Centraliza verticalmente a primeira linha */
+    
+    /* Estilização da barra de rolagem interna para ficar sutil */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-red) rgba(0,0,0,0.3);
+}
+
+/* Ajuste fino para navegadores Webkit (Chrome/Edge) */
+textarea.msg-field::-webkit-scrollbar {
+    width: 4px;
+}
+textarea.msg-field::-webkit-scrollbar-thumb {
+    background: var(--accent-red);
+    border-radius: 2px;
+}
