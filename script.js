@@ -319,7 +319,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // 6.1 - Botão "Ir para Chat"
     if(scrollToChatBtn && commsSection) {
         scrollToChatBtn.addEventListener('click', () => {
-            commsSection.scrollIntoView({ behavior: 'smooth' });
+            // 1. Define um "desconto" (offset) para parar ANTES do título
+            // 150px costuma ser um bom espaço para deixar o título confortável na tela
+            const yOffset = -150; 
+            
+            // 2. Calcula a posição exata onde a seção está na página
+            const elementTop = commsSection.getBoundingClientRect().top;
+            
+            // 3. Calcula a posição final somando a rolagem atual + posição do elemento + o desconto
+            const yPosition = elementTop + window.scrollY + yOffset;
+
+            // 4. Executa o scroll controlado
+            window.scrollTo({
+                top: yPosition,
+                behavior: 'smooth'
+            });
+
+            // Foca no input após a animação
             setTimeout(() => commsInput.focus(), 800);
         });
     }
@@ -354,8 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
         '#40e0d0', // Sage Teal
         '#a4f0f5', // Jett Cyan
         '#ffffff',  // White
-        '#1a1a1a', // Preto suave
-        '#0a0f24', // Azul profundo futurista
         '#ff6f91', // Rosa neon suave
         '#7cffcb', // Verde neon limpo
         '#8b5cf6', // Roxo vibrante (tipo Discord)
